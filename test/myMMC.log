@@ -1,0 +1,1 @@
+loopmax:10000 Temp:300.0 convergenc: energy < 0.01 in 100 steps

@@ -1,0 +1,30 @@
+units         metal
+dimension     3
+atom_style    atomic
+atom_modify   map array
+boundary      p  p  p
+
+
+pair_style hybrid/overlay eam/alloy eam/fs
+read_data     FeCr5.dat
+pair_coeff * * eam/alloy FeCCr_d.eam.alloy Fe Cr
+pair_coeff * * eam/fs FeCCr_s.eam.fs Fe Cr
+
+
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+thermo_style custom step temp pe ke etotal press
+thermo 10
+
+timestep     0.00025
+
+compute     pe  all pe
+compute     ke  all ke
+
+fix 1 all box/relax iso 0.0 vmax 0.001
+minimize     0.0 1.0e-6 10000   100000
+
+
+run 0
+write_data  relaxed_FeCr5.dat
