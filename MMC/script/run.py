@@ -96,7 +96,7 @@ def main():
             mydata.update_EREFs(mydata.this_types, eatoms)
             if rank_world == 0:
                 logstr = f"Reference energies for {ntypes} types at {iloop} step are :{mydata.EREFs}"
-                print(logstr)
+                Logfile.write_to_file(logstr, open_style="a")
 
         if rank_world == 0:
             isAccept, iaccept, ireject = mydata.MMC(iaccept, ireject, Temp=Temperature)
