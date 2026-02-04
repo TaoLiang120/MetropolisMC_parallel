@@ -9,7 +9,7 @@ from MMC.mmc import DFWriter, LOGWriter, PyLMP4MMC, MMC
 comm_world = MPI.COMM_WORLD
 rank_world = comm_world.Get_rank()
 size_world = comm_world.Get_size()
- 
+
 def main():
     finput4mmc = "inputMMC.yaml"
     thissett = Settings.from_file(finput4mmc)
@@ -66,9 +66,6 @@ def main():
     energy_checkpoint = init_energy
 
     if rank_world == 0:
-        mydata.write_shifted_data(mydata.last_types, eatoms, ratio_shift, "MMC" + str(iloop) + ".dat",
-                                  atom_style=atom_style, DataOut_Path=DataOut_Path)
-
         logstr = f"loopmax:{loopmax} Temp:{Temperature} convergenc: energy < {tol} in {Nsteps4Checkpoint} steps"
         Logfile.write_to_file(logstr, open_style="w")
         logstr = f"start MMC for fname:{fdata} natoms:{mydata.natoms} ratio_hot:{ratio_hot} ratio_cold: {ratio_cold}"

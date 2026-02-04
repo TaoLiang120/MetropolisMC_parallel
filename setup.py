@@ -19,10 +19,10 @@ setup(
 ##    package_data={
 ##        "prettyformula.periodictable": ["*.json"],
 ##    },
-##    entry_points={
-##        'console_scripts': ['seakmc = seakmc.script.seakmc:main']
-##        },
-##    license = license,
+    entry_points={
+        'console_scripts': ['MMC = MMC.script.run:main']
+    },
+    license=license,
     description = 'a custom code for Metropolis Monte Carlo',
     author = 'Tao Liang',
     author_email = 'xhtliang120@gmail.com',

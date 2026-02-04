@@ -10,6 +10,7 @@ from lammps import lammps
 from pymatgen.io.lammps.data import ATOMS_HEADERS
 from pymatgen.io.lammps.data import LammpsBox, LammpsData, lattice_2_lmpbox
 from pymatgen.io.lammps.outputs import parse_lammps_dumps
+from MMC.error_exit import error_exit
 
 comm_world = MPI.COMM_WORLD
 rank_world = comm_world.Get_rank()
@@ -33,12 +34,17 @@ class DFWriter:
         self.df.to_csv(self.fname, index=False)
     
 class LOGWriter:
-    def __init__(self, fname):
+    def __init__(self, fname, screen=True, log=True):
         self.fname = fname
+        self.screen = screen
+        self.log = log
 
     def write_to_file(self, thisstring, open_style="a"):
-        with open(self.fname, open_style) as fh:
-            fh.write(thisstring + "\n")
+        if self.screen:
+            print(thisstring)
+        if self.log:
+            with open(self.fname, open_style) as fh:
+                fh.write(thisstring + "\n")
 
 class PyLMP4MMC:
     def __init__(self, Screen=False, Log=False, comm=None):
@@ -134,7 +140,7 @@ class MMC:
             self.EREFs = np.zeros(ntypes, dtype=float)
         if ff_elements is None:
             ff_elements = np.arange(self.ntypes, dtype=int) + 1
-        self.ff_elements = ff_elements
+        self.ff_elements = np.array(ff_elements)
         self.this_types = np.ones(self._natoms, dtype=int)
         self.last_types = np.ones(self._natoms, dtype=int)
         self.this_TE = 0.0
@@ -163,8 +169,8 @@ class MMC:
                 EREFs[i] = np.sum(thiseatoms)/len(thiseatoms)
         self.EREFs = EREFs     
 
-    def write_shifted_data(self, types, eatoms, ratio_shift, filein, atom_style="atomic"):
-        lmpdata = LammpsData.from_file(os.path.join("DataOut", filein), atom_style, sort_id=True)
+    def write_shifted_data(self, types, eatoms, ratio_shift, filein, atom_style="atomic", DataOut_Path="DataOut"):
+        lmpdata = LammpsData.from_file(os.path.join(DataOut_Path, filein), atom_style, sort_id=True)
         ff_elements = np.append(self.ff_elements, self.ff_elements)
         force_field = {}
         for i in range(len(ff_elements)):
@@ -184,7 +190,7 @@ class MMC:
         sinds = np.argsort(inds)
         shifted_types = sorted_types[sinds]
         lmpdata.atoms['type'] = shifted_types
-        lmpdata.write_file(os.path.join("DataOut", filein + "_shifted.dat"))
+        lmpdata.write_file(os.path.join(DataOut_Path, filein + "_shifted.dat"))
 
     def get_select_ids(self, types, eatoms, Exclude_types=None, Enforce_types=None, maxloop=100):
         if isinstance(Enforce_types, int):
@@ -212,7 +218,8 @@ class MMC:
         inds = np.argsort(eadiff)
         iratio_hot = int(natoms4mmc*self.ratio_hot)
         if iratio_hot < 2:
-            raise ValueError("System is too small for iratio_hot. Set iratio_hot to 1.0 and rerun it.")
+            errormsg = "System is too small for iratio_hot. Set iratio_hot to 1.0 and rerun it."
+            error_exit(errormsg)
 
         isValid = False
         iloop = 0
@@ -222,22 +229,26 @@ class MMC:
             sid_hot = inds[sid_hot]
             sid_hot = goodinds[sid_hot]
             type_hot = apptypes[sid_hot]
-            if Enforce_types is None:
-                isValid = True
-            else:
+            if isinstance(Enforce_types, list) or isinstance(Enforce_types, np.ndarray):
                 if type_hot + 1 in Enforce_types:
                     isValid = True
+            else:
+                isValid = True
             if iloop > maxloop:
                 isValid = True
             iloop += 1
         sym_hot = self.ff_elements[type_hot]
+
+        print(f"goodinds: {goodinds} apptypes: {apptypes[goodinds]}")
  
         syms_cold = self.ff_elements[apptypes[goodinds]]
         syms_cold = syms_cold[inds]
         inds_cold = np.compress(syms_cold != sym_hot, inds)
         iratio_cold = int(len(inds_cold)*self.ratio_cold)
         if iratio_cold < 2:
-            raise ValueError("System is too small for iratio_cold. Set iratio_cold to 1.0 and rerun it.") 
+            errormsg = "System is too small for iratio_cold. Set iratio_cold to 1.0 and rerun it."
+            error_exit(errormsg)
+
         sid_cold_local = np.random.randint(iratio_cold, size=1)
         if self.reverse_cold:
             sid_cold_local = len(inds_cold) - sid_cold_local[0] - 1

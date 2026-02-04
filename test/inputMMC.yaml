@@ -1,0 +1,34 @@
+PyLAMMPS:
+  Screen: False
+  Log: False
+  FileName: FeCr5.dat
+  atom_style: atomic
+  Input4LAMMPS: in.MMC
+MetropolisMC:
+  ntypes: 2
+  EREFs: None
+  ff_elements:
+    - Fe
+    - Cr
+  ratio_hot: 0.1
+  ratio_cold: 0.5
+  reverse_cold: True
+  ratio_shift: 0.1
+  Exclude_types: None
+  Enforce_types: None
+  LoopMax: 1000
+  Nsteps4Relax: 100
+  Nsteps4Checkpoint: 100
+  Nsteps4UpdateEREFs: 10
+  Temperature": 300.0
+  Tolerance": 0.001
+visual:
+  SummaryFile: MMC_Summary.csv
+  LogFile: MMC.log
+  Screen: True
+  Log: True
+  DataOut_Path: DataOut
+  Nsteps4WriteData: 100
+  Nsteps4Visual: 10
+  Nsteps4Summary: 10
+
