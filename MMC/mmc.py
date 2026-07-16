@@ -132,7 +132,8 @@ class PyLMP4MMC:
         self.bin.close()
 
 class MMC:
-    def __init__(self, ntypes, EREFs=None, ff_elements=None, ratio_hot=0.1, ratio_cold=0.5, reverse_cold=True):
+    def __init__(self, ntypes, EREFs=None, ff_elements=None, ratio_hot1=0.1, ratio_hot2=0.2,
+                 norm="auto", min_norm=0.02):
         self.kB = 8.617333262145e-5
         self._natoms = 1
         self.ntypes = ntypes
@@ -145,9 +146,22 @@ class MMC:
         self.last_types = np.ones(self._natoms, dtype=int)
         self.this_TE = 0.0
         self.last_TE = 0.0
-        self.ratio_hot = ratio_hot
-        self.ratio_cold = ratio_cold
-        self.reverse_cold = reverse_cold
+        self.ratio_hot1 = ratio_hot1
+        self.ratio_hot2 = ratio_hot2
+        if isinstance(self.ratio_hot1, float):
+            self.ratio_hot1 = [self.ratio_hot1] * ntypes
+        if isinstance(self.ratio_hot2, float):
+            self.ratio_hot2 = [self.ratio_hot2] * ntypes
+        self.norm = norm
+
+        if isinstance(self.norm, float):
+            self.norm = [self.norm] * ntypes
+        elif self.norm.lower() == "none":
+            self.norm = ["none"] * ntypes
+        else:
+            self.norm = ["auto"] * ntypes
+        self.min_norm = min_norm
+
 
     @property
     def natoms(self):
@@ -194,74 +208,87 @@ class MMC:
 
     def get_select_ids(self, types, eatoms, Exclude_types=None, Enforce_types=None, maxloop=100):
         if isinstance(Enforce_types, int):
-            Enforce_types = [Enforce_types]      
+            Enforce_types = [Enforce_types]
+        elif isinstance(Enforce_types, str):
+            Enforce_types = None
+        if isinstance(Exclude_types, int):
+            Exclude_types = [Exclude_types]
+        elif isinstance(Exclude_types, str):
+            Exclude_types = None
+
         apptypes = types - 1
         earefs = self.EREFs[apptypes]
         eadiff = eatoms - earefs
-        if isinstance(Exclude_types, int):
-            Exclude_types = [Exclude_types]
-        if isinstance(Exclude_types, list) or isinstance(Exclude_types, np.ndarray):
-            Exclude_types = np.array(Exclude_types).astype(int)
-            Exclude_types -= 1
-            local_apptypes = types - 1
-            goodinds = np.arange(len(eadiff), dtype=int)
-            for i in range(len(Exclude_types)):
-                thistype = Exclude_types[i]
-                local_goods = np.arange(len(eadiff), dtype=int)
-                local_goods = np.compress(local_apptypes != thistype, local_goods)
-                goodinds = goodinds[local_goods]
-                local_apptypes = local_apptypes[local_goods]
-                eadiff = eadiff[local_goods]
-        else:
-            goodinds = np.arange(len(eadiff), dtype=int)
-        natoms4mmc = len(eadiff)
-        inds = np.argsort(eadiff)
-        iratio_hot = int(natoms4mmc*self.ratio_hot)
-        if iratio_hot < 2:
-            errormsg = "System is too small for iratio_hot. Set iratio_hot to 1.0 and rerun it."
-            error_exit(errormsg)
 
-        isValid = False
-        iloop = 0
-        while not isValid:
-            sid_hot = np.random.randint(iratio_hot, size=1)
-            sid_hot = natoms4mmc - sid_hot[0] - 1
-            sid_hot = inds[sid_hot]
-            sid_hot = goodinds[sid_hot]
-            type_hot = apptypes[sid_hot]
-            if isinstance(Enforce_types, list) or isinstance(Enforce_types, np.ndarray):
-                if type_hot + 1 in Enforce_types:
-                    isValid = True
+        inds = np.arange(len(eatoms)).astype(int)
+        inds_type = []
+        local_inds_type = []
+        maxdiff_type = []
+        for i in range(self.ntypes):
+            thisnorm = self.norm[i]
+            thisref = self.EREFs[i]
+            if thisnorm == "none":
+                thisnorm = 1.0
+            elif thisnorm == "auto":
+                thisnorm = max(abs(thisref), self.min_norm)`    
             else:
-                isValid = True
-            if iloop > maxloop:
-                isValid = True
-            iloop += 1
-        sym_hot = self.ff_elements[type_hot]
+                continue
 
-        print(f"goodinds: {goodinds} apptypes: {apptypes[goodinds]}")
- 
-        syms_cold = self.ff_elements[apptypes[goodinds]]
-        syms_cold = syms_cold[inds]
-        inds_cold = np.compress(syms_cold != sym_hot, inds)
-        iratio_cold = int(len(inds_cold)*self.ratio_cold)
-        if iratio_cold < 2:
-            errormsg = "System is too small for iratio_cold. Set iratio_cold to 1.0 and rerun it."
-            error_exit(errormsg)
+            thisinds = np.compress(apptypes == i, inds)
+            if len(thisinds) > 0:
+                thiseadiff = eadiff[thisinds]
+                local_inds = np.argsort(thiseadiff)[::-1]
+                thismax = thiseadiff[local_inds[0]] / thisnorm
+            else:
+                thisinds = np.array([]).astype(int)
+                local_inds = np.array([])
+                thismax = 0.0
 
-        sid_cold_local = np.random.randint(iratio_cold, size=1)
-        if self.reverse_cold:
-            sid_cold_local = len(inds_cold) - sid_cold_local[0] - 1
+            inds_type.append(thisinds)
+            local_inds_type.append(local_inds)
+            maxdiff_type.append(thismax)
+
+        id_type = np.arange(self.ntypes).astype(int)
+        if Exclude_types is not None:
+            id_type = np.delete(id_type, np.array(Exclude_types).astype(int) - 1)
+            maxdiff_type = maxdiff_type[id_type]
+
+        if Enforce_types is not None:
+            id1_type = np.array(Enforce_types).astype(int) - 1
+            typeid1 = np.random.randint(len(id1_type), size=1)[0]
         else:
-            sid_cold_local = sid_cold_local[0]
-        sid_cold_in_inds = inds_cold[sid_cold_local]
-        sid_cold = goodinds[sid_cold_in_inds]
-        type_cold = apptypes[sid_cold]
-        sym_cold = self.ff_elements[type_cold]
-        #print(f"sym_hot:{sym_hot}   type_hot:{type_hot}   e_hot: {eatoms[sid_hot]}")
-        #print(f"sym_cold:{sym_cold} type_cold:{type_cold} e_cold:{eatoms[sid_cold]}")
+            local_typeid1 = np.argmax(np.array(maxdiff_type))
+            print(id_type, local_typeid1)
+            typeid1 = id_type[local_typeid1]
+
+        sym1 = self.ff_elements[typeid1]
+        thisratio1 = self.ratio_hot1[typeid1]
+        natoms1 = len(local_inds_type[typeid1])
+        iratio1 = int(natoms1*thisratio1)
+        if iratio1 < 2:
+            raise ValueError("System is too small for iratio first pick. Set iratio_hot1 to 1.0 and rerun it.")
+        local_sid1 = np.random.randint(iratio1, size=1)[0]
+        global_sid1 = local_inds_type[typeid1][local_sid1]
+        sid1 = inds_type[typeid1][global_sid1]
+
+
+        id_type = np.delete(id_type, [typeid1])
+        local_typeid2 = np.random.randint(len(id_type), size=1)[0]
+        typeid2 = id_type[local_typeid2]
+        sym2 = self.ff_elements[typeid2]
+        thisratio2 = self.ratio_hot2[typeid2]
+        natoms2 = len(local_inds_type[typeid2])
+        iratio2 = int(natoms2*thisratio2)
+        if iratio2 < 2:
+            raise ValueError("System is too small for iratio second pick. Set iratio_hot2 to 1.0 and rerun it.")
+        local_sid2 = np.random.randint(iratio2, size=1)[0]
+        global_sid2 = local_inds_type[typeid2][local_sid2]
+        sid2 = inds_type[typeid2][global_sid2]
+
+        #print(f"sym1:{sym1} typeid1:{typeid1} sid1:{sid1} e_1:{eatoms[sid1]}")
+        #print(f"sym2:{sym2} typeid2:{typeid2} sid2:{sid2} e_2:{eatoms[sid2]}")
         #print("----")
-        return sid_hot, sid_cold
+        return sid1, sid2
 
     def get_this_types(self, id_hot, id_cold):
         self.this_types = copy.deepcopy(self.last_types)

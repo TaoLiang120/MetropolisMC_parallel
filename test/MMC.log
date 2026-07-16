@@ -1,64 +1,25 @@
-loopmax:1000 Temp:300.0 convergenc: energy < 0.001 in 100 steps
-start MMC for fname:FeCr5.dat natoms:16000 ratio_hot:0.1 ratio_cold: 0.5
+loopmax:100 Temp:300.0 convergenc: energy < 0.001 in 100 steps
+start MMC for fname:FeCr5.dat natoms:16000 ratio_hot1:0.1 ratio_hot2: 0.3
 Reference energies of each type at 0 step are :[-4.06940084 -2.83199284]
 == iloop:0 iaccept:0 ireject: 0 total_energy:-64120.487000357476 ==
-== iloop:10 iaccept:3 ireject: 7 total_energy:-64120.80171914798 ==
-== iloop:20 iaccept:11 ireject: 9 total_energy:-64121.7151839588 ==
-== iloop:30 iaccept:14 ireject: 16 total_energy:-64122.361333080764 ==
-== iloop:40 iaccept:18 ireject: 22 total_energy:-64122.937221257635 ==
-== iloop:50 iaccept:23 ireject: 27 total_energy:-64123.32246717692 ==
-== iloop:60 iaccept:31 ireject: 29 total_energy:-64124.35977244158 ==
-== iloop:70 iaccept:33 ireject: 37 total_energy:-64124.43231861606 ==
-== iloop:80 iaccept:39 ireject: 41 total_energy:-64125.407635882686 ==
-== iloop:90 iaccept:44 ireject: 46 total_energy:-64125.88108676207 ==
-== iloop:100 iaccept:51 ireject: 49 total_energy:-64126.611986499345 ==
-== iloop:110 iaccept:59 ireject: 51 total_energy:-64127.02224555833 ==
-== iloop:120 iaccept:64 ireject: 56 total_energy:-64127.66955985521 ==
-== iloop:130 iaccept:67 ireject: 63 total_energy:-64127.76997580207 ==
-== iloop:140 iaccept:73 ireject: 67 total_energy:-64128.68275106737 ==
-== iloop:150 iaccept:77 ireject: 73 total_energy:-64128.91596103052 ==
-== iloop:160 iaccept:82 ireject: 78 total_energy:-64129.49472447106 ==
-== iloop:170 iaccept:86 ireject: 84 total_energy:-64130.04509704109 ==
-== iloop:180 iaccept:89 ireject: 91 total_energy:-64130.200217032245 ==
-== iloop:190 iaccept:92 ireject: 98 total_energy:-64130.36871014824 ==
-== iloop:200 iaccept:96 ireject: 104 total_energy:-64130.481643926236 ==
-== iloop:210 iaccept:98 ireject: 112 total_energy:-64130.75775460643 ==
-== iloop:220 iaccept:104 ireject: 116 total_energy:-64131.57611782785 ==
-== iloop:230 iaccept:107 ireject: 123 total_energy:-64131.62492716519 ==
-== iloop:240 iaccept:109 ireject: 131 total_energy:-64131.7603954867 ==
-== iloop:250 iaccept:115 ireject: 135 total_energy:-64132.1092759888 ==
-== iloop:260 iaccept:121 ireject: 139 total_energy:-64133.17117897363 ==
-== iloop:270 iaccept:126 ireject: 144 total_energy:-64133.33975054769 ==
-== iloop:280 iaccept:128 ireject: 152 total_energy:-64133.372724852576 ==
-== iloop:290 iaccept:134 ireject: 156 total_energy:-64133.94540198539 ==
-== iloop:300 iaccept:137 ireject: 163 total_energy:-64134.18467523928 ==
-== iloop:310 iaccept:139 ireject: 171 total_energy:-64134.207209117805 ==
-== iloop:320 iaccept:143 ireject: 177 total_energy:-64134.46499093308 ==
-== iloop:330 iaccept:145 ireject: 185 total_energy:-64134.63691589795 ==
-== iloop:340 iaccept:148 ireject: 192 total_energy:-64135.21215674979 ==
-== iloop:350 iaccept:149 ireject: 201 total_energy:-64135.33275378715 ==
-== iloop:360 iaccept:153 ireject: 207 total_energy:-64135.486484939574 ==
-== iloop:370 iaccept:154 ireject: 216 total_energy:-64135.47405699925 ==
-== iloop:380 iaccept:157 ireject: 223 total_energy:-64135.75334396629 ==
-== iloop:390 iaccept:160 ireject: 230 total_energy:-64136.11769157414 ==
-== iloop:400 iaccept:164 ireject: 236 total_energy:-64136.40141190819 ==
-== iloop:410 iaccept:168 ireject: 242 total_energy:-64136.57615788428 ==
-== iloop:420 iaccept:171 ireject: 249 total_energy:-64136.947513783976 ==
-== iloop:430 iaccept:175 ireject: 255 total_energy:-64137.06139991874 ==
-== iloop:440 iaccept:178 ireject: 262 total_energy:-64137.244327388806 ==
-== iloop:450 iaccept:181 ireject: 269 total_energy:-64137.35275283633 ==
-== iloop:460 iaccept:183 ireject: 277 total_energy:-64137.346429072524 ==
-== iloop:470 iaccept:185 ireject: 285 total_energy:-64137.317779128374 ==
-== iloop:480 iaccept:189 ireject: 291 total_energy:-64137.514598901944 ==
-== iloop:490 iaccept:192 ireject: 298 total_energy:-64137.67512491041 ==
-== iloop:500 iaccept:196 ireject: 304 total_energy:-64138.28193039439 ==
-== iloop:510 iaccept:199 ireject: 311 total_energy:-64138.71367150064 ==
-== iloop:520 iaccept:201 ireject: 319 total_energy:-64138.80489851026 ==
-== iloop:530 iaccept:205 ireject: 325 total_energy:-64139.213009282976 ==
-== iloop:540 iaccept:205 ireject: 335 total_energy:-64139.213009282976 ==
-== iloop:550 iaccept:208 ireject: 342 total_energy:-64139.8774551681 ==
-== iloop:560 iaccept:210 ireject: 350 total_energy:-64140.051205665266 ==
-== iloop:570 iaccept:212 ireject: 358 total_energy:-64140.25345283279 ==
-== iloop:580 iaccept:214 ireject: 366 total_energy:-64140.450700623536 ==
-== iloop:590 iaccept:217 ireject: 373 total_energy:-64140.783812714086 ==
-== iloop:600 iaccept:217 ireject: 383 total_energy:-64140.783812714086 ==
+Reference energies for 2 types at 10 step are :[-4.06951807 -2.83176667]
+== iloop:10 iaccept:9 ireject: 1 total_energy:-64122.0880288841 ==
+Reference energies for 2 types at 20 step are :[-4.0695845  -2.83166366]
+== iloop:20 iaccept:13 ireject: 7 total_energy:-64123.01524742059 ==
+Reference energies for 2 types at 30 step are :[-4.06964081 -2.83146349]
+== iloop:30 iaccept:17 ireject: 13 total_energy:-64123.81196267387 ==
+Reference energies for 2 types at 40 step are :[-4.06977174 -2.83144498]
+== iloop:40 iaccept:24 ireject: 16 total_energy:-64125.68669454281 ==
+Reference energies for 2 types at 50 step are :[-4.06983339 -2.83127723]
+== iloop:50 iaccept:30 ireject: 20 total_energy:-64126.489518736715 ==
+Reference energies for 2 types at 60 step are :[-4.0698738  -2.83117023]
+== iloop:60 iaccept:37 ireject: 23 total_energy:-64127.01794725064 ==
+Reference energies for 2 types at 70 step are :[-4.06992239 -2.83108337]
+== iloop:70 iaccept:45 ireject: 25 total_energy:-64127.687186601135 ==
+Reference energies for 2 types at 80 step are :[-4.06993861 -2.830918  ]
+== iloop:80 iaccept:49 ireject: 31 total_energy:-64128.148501726755 ==
+Reference energies for 2 types at 90 step are :[-4.07000408 -2.83079809]
+== iloop:90 iaccept:55 ireject: 35 total_energy:-64128.72611052603 ==
+Reference energies for 2 types at 100 step are :[-4.07004213 -2.83055916]
+== iloop:100 iaccept:59 ireject: 41 total_energy:-64129.13129304926 ==
+== iloop:100 iaccept:59 ireject: 41 total_energy:-64129.13129304926 ==
