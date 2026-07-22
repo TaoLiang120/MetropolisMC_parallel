@@ -47,6 +47,8 @@ def main():
     ratio_shift = MMCsetts["ratio_shift"]
     Exclude_types = MMCsetts["Exclude_types"]
     Enforce_types = MMCsetts["Enforce_types"]
+    Inteval4Enforce = MMCsetts["Inteval4Enforce"]
+    Exclude_mid = MMCsetts["Exclude_mid"]
     Nsteps4Checkpoint = MMCsetts["Nsteps4Checkpoint"]
     Temperature = MMCsetts["Temperature"]
     tol = MMCsetts["Tolerance"]
@@ -61,10 +63,10 @@ def main():
     iaccept = 0
     ireject = 0
     lmp.excute_file(infile)
-    mydata.last_TE, mydata.last_types = lmp.get_total_energy_types(iloop)
+    mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop)
     mydata.natoms = len(mydata.last_types)
     eatoms = lmp.get_eatoms(iloop, mydata.natoms)
-    mydata.update_EREFs(mydata.last_types, eatoms)
+    mydata.update_EREFs(mydata.last_types, eatoms, molids=molids, Exclude_mid=Exclude_mid)
     init_energy = mydata.last_TE
     energy_checkpoint = init_energy
 
@@ -82,8 +84,9 @@ def main():
     isValid = True
     while isValid:
         if rank_world == 0:
-            id_hot, id_hot2 = mydata.get_select_ids(mydata.last_types, eatoms, Exclude_types=Exclude_types,
-                                                    Enforce_types=Enforce_types)
+            id_hot, id_hot2 = mydata.get_select_ids(iloop, mydata.last_types, eatoms, Exclude_types=Exclude_types,
+                                                    Enforce_types=Enforce_types, Inteval4Enforce=Inteval4Enforce,
+                                                    molids=molids, Exclude_mid=Exclude_mid)
             this_types = mydata.get_this_types(id_hot, id_hot2)
         else:
             this_types = None
@@ -92,7 +95,7 @@ def main():
         this_types = comm_world.bcast(this_types, root=0)
         lmp.scatter_this_types(this_types)
         iloop += 1
-        mydata.this_TE, mydata.this_types = lmp.get_total_energy_types(iloop)
+        mydata.this_TE, mydata.this_types, molids = lmp.get_total_energy_types(iloop)
         eatoms = lmp.get_eatoms(iloop, mydata.natoms)
 
         if iloop % Nsteps4UpdateEREFs == 0:

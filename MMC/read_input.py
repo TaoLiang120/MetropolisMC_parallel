@@ -65,6 +65,8 @@ class Settings:
                    "ratio_hot": 0.1, "ratio_hot2": 0.3, "norm": "auto", "min_norm": 0.02,
                    "ratio_shift": 0.1,
                    "Exclude_types": None, "Enforce_types": None,
+                   "Inteval4Enforce": 1,
+                   "Exclude_mid": False,
                    "LoopMax": 1000000,
                    "Nsteps4Relax": 100,
                    "Nsteps4Checkpoint": 100,
