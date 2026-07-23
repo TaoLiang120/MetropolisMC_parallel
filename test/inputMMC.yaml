@@ -1,8 +1,8 @@
 PyLAMMPS:
   Screen: False
   Log: False
-  FileName: FeCr5.dat
-  atom_style: atomic
+  FileName: FeCr5_reset.dat
+  atom_style: molecular
   Input4LAMMPS: in.MMC
 MetropolisMC:
   ntypes: 2
@@ -18,7 +18,7 @@ MetropolisMC:
   Exclude_types: None
   Enforce_types: None
   Inteval4Enforce: 1
-  Exclude_mid: False
+  Exclude_mid: True
   LoopMax: 100
   Nsteps4Relax: 100
   Nsteps4Checkpoint: 100

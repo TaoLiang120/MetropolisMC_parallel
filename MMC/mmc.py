@@ -184,7 +184,9 @@ class MMC:
         if Exclude_mid and molids is not None:
             inds = np.compress(molids >= 0, inds)
             eatoms_mols = eatoms_mols[inds]
+            apptypes = apptypes[inds]
             inds = np.arange(len(eatoms_mols)).astype(int)
+
         EREFs = np.zeros(self.ntypes, dtype=float)
         for i in range(self.ntypes):
             thisinds = np.compress(apptypes == i, inds)
@@ -237,6 +239,7 @@ class MMC:
         if Exclude_mid and molids is not None:
             inds_mols = np.compress(molids >= 0, inds)
         eadiff_mols = eadiff[inds_mols]
+        apptypes = apptypes[inds_mols]
         inds = np.arange(len(eadiff_mols)).astype(int)
 
         inds_type = []

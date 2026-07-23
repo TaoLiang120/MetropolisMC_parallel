@@ -1,1 +1,141 @@
-LAMMPS (7 Feb 2024 - Update 1)
+LAMMPS (28 Mar 2023 - Update 1)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+units         metal
+dimension     3
+atom_style    molecular
+atom_modify   map array
+boundary      p  p  p
+
+
+pair_style hybrid/overlay eam/alloy eam/fs
+read_data     FeCr5_reset.dat
+Reading data file ...
+  triclinic box = (-0.068686 -0.068686 -0.068686) to (57.068686 57.068686 57.068686) with tilt (0 0 0)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  16000 atoms
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     0 = max # of 1-2 neighbors
+     0 = max # of 1-3 neighbors
+     0 = max # of 1-4 neighbors
+     1 = max # of special neighbors
+  special bonds CPU = 0.002 seconds
+  read_data CPU = 0.031 seconds
+pair_coeff * * eam/alloy FeCCr_d.eam.alloy Fe Cr
+pair_coeff * * eam/fs FeCCr_s.eam.fs Fe Cr
+
+
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+thermo_style custom step temp pe ke etotal press
+thermo 10
+
+timestep     0.00025
+
+compute     pe  all pe
+compute     ke  all ke
+
+fix 1 all box/relax iso 0.0 vmax 0.001
+minimize     0.0 1.0e-6 10000   100000
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 7.3
+  ghost atom cutoff = 7.3
+  binsize = 3.65, bins = 16 16 16
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair eam/alloy, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton/tri
+      stencil: half/bin/3d/tri
+      bin: standard
+  (2) pair eam/fs, perpetual, copy from (1)
+      attributes: half, newton on
+      pair build: copy
+      stencil: none
+      bin: none
+WARNING: Energy due to 1 extra global DOFs will be included in minimizer energies
+ (src/min.cpp:225)
+Per MPI rank memory allocation (min/avg/max) = 30.75 | 30.75 | 30.75 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press     
+         0   0             -64120.487      0             -64120.487     -0.046151174  
+        10   0             -64120.487      0             -64120.487     -4.4865604e-05
+        20   0             -64120.487      0             -64120.487     -0.0011485191 
+        30   0             -64120.487      0             -64120.487      9.4702194e-05
+Loop time of 3.99925 on 1 procs for 30 steps with 16000 atoms
+
+99.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+Minimization stats:
+  Stopping criterion = linesearch alpha is zero
+  Energy initial, next-to-last, final = 
+     -64120.4870003384  -64120.4870003675  -64120.4870003675
+  Force two-norm initial, final = 0.016135773 0.00014248194
+  Force max component initial, final = 0.016119606 3.3077427e-05
+  Final line search alpha, max atom move = 0.5 1.6538713e-05
+  Iterations, force evaluations = 30 61
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 3.9458     | 3.9458     | 3.9458     |   0.0 | 98.66
+Bond    | 1.7372e-05 | 1.7372e-05 | 1.7372e-05 |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.0071526  | 0.0071526  | 0.0071526  |   0.0 |  0.18
+Output  | 0.00014245 | 0.00014245 | 0.00014245 |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.04611    |            |       |  1.15
+
+Nlocal:          16000 ave       16000 max       16000 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          17201 ave       17201 max       17201 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:      1.088e+06 ave   1.088e+06 max   1.088e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1088000
+Ave neighs/atom = 68
+Ave special neighs/atom = 0
+Neighbor list builds = 0
+Dangerous builds = 0
+
+
+run 0
+WARNING: No fixes with time integration, atoms won't move (src/verlet.cpp:60)
+Per MPI rank memory allocation (min/avg/max) = 27.37 | 27.37 | 27.37 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press     
+        30   0             -64120.487      0             -64120.487      9.4702421e-05
+Loop time of 9.8e-07 on 1 procs for 0 steps with 16000 atoms
+
+102.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Bond    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 9.8e-07    |            |       |100.00
+
+Nlocal:          16000 ave       16000 max       16000 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          17201 ave       17201 max       17201 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:      1.088e+06 ave   1.088e+06 max   1.088e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1088000
+Ave neighs/atom = 68
+Ave special neighs/atom = 0
+Neighbor list builds = 0
+Dangerous builds = 0
+write_data  relaxed_FeCr5.dat
+System init for write_data ...
+Total wall time: 0:00:05

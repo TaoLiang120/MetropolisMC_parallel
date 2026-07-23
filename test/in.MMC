@@ -1,6 +1,6 @@
 units         metal
 dimension     3
-atom_style    atomic
+atom_style    molecular
 atom_modify   map array
 boundary      p  p  p
 

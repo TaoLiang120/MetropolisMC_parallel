@@ -1,12 +1,12 @@
 units         metal
 dimension     3
-atom_style    atomic
+atom_style    molecular
 atom_modify   map array
 boundary      p  p  p
 
 
 pair_style hybrid/overlay eam/alloy eam/fs
-read_data     FeCr5.dat
+read_data     FeCr5_reset.dat
 pair_coeff * * eam/alloy FeCCr_d.eam.alloy Fe Cr
 pair_coeff * * eam/fs FeCCr_s.eam.fs Fe Cr
 

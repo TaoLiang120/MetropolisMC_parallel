@@ -84,10 +84,10 @@ def main():
     isValid = True
     while isValid:
         if rank_world == 0:
-            id_hot, id_hot2 = mydata.get_select_ids(iloop, mydata.last_types, eatoms, Exclude_types=Exclude_types,
+            id_hot1, id_hot2 = mydata.get_select_ids(iloop, mydata.last_types, eatoms, Exclude_types=Exclude_types,
                                                     Enforce_types=Enforce_types, Inteval4Enforce=Inteval4Enforce,
                                                     molids=molids, Exclude_mid=Exclude_mid)
-            this_types = mydata.get_this_types(id_hot, id_hot2)
+            this_types = mydata.get_this_types(id_hot1, id_hot2)
         else:
             this_types = None
         comm_world.Barrier()
