@@ -1,4 +1,6 @@
 import os
+from logging import warning
+
 import numpy as np
 import pandas as pd
 import copy
@@ -272,17 +274,31 @@ class MMC:
             natype.append(len(thisinds))
 
         maxdiff_type = np.array(maxdiff_type)
-        natype = np.array(natype)
+        natype = np.array(natype).astype(int)
         id_type = np.arange(self.ntypes).astype(int)
-        if Exclude_types is not None:
-            id_type = np.delete(id_type, np.array(Exclude_types).astype(int) - 1)
+
+        thisExclude_types = []
+        for i in range(self.ntypes):
+            if natype[i] == 0:
+                thisExclude_types.append(i+1)
+                print(f"WARNING: No atoms in type {i+1}!")
+        if Exclude_types is None:
+            pass
+        else:
+            thisExclude_types += Exclude_types
+        if len(thisExclude_types) > 0:
+            id_type = np.delete(id_type, np.array(thisExclude_types).astype(int) - 1)
             maxdiff_type = maxdiff_type[id_type]
             natype = natype[id_type]
+
+        if len(id_type) < 2:
+            raise ValueError("System is has less than two types for MMMC.")
 
         if Enforce_types is not None:
             if iloop % Inteval4Enforce != 0:
                 id1_type = np.array(Enforce_types).astype(int) - 1
-                typeid1 = np.random.randint(len(id1_type), size=1)[0]
+                local_typeid1 = np.random.randint(len(id1_type), size=1)[0]
+                typeid1 = id_type[local_typeid1]
                 if natype[typeid1] < 2:
                     local_typeid1 = np.argmax(np.array(maxdiff_type))
                     typeid1 = id_type[local_typeid1]
