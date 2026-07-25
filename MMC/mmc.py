@@ -283,7 +283,7 @@ class MMC:
             if iloop % Inteval4Enforce != 0:
                 id1_type = np.array(Enforce_types).astype(int) - 1
                 typeid1 = np.random.randint(len(id1_type), size=1)[0]
-                if natype[typeid1] == 0:
+                if natype[typeid1] < 2:
                     local_typeid1 = np.argmax(np.array(maxdiff_type))
                     typeid1 = id_type[local_typeid1]
             else:
