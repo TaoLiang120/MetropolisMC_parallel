@@ -245,6 +245,7 @@ class MMC:
         inds_type = []
         local_inds_type = []
         maxdiff_type = []
+        natype = []
         for i in range(self.ntypes):
             thisnorm = self.norm[i]
             thisref = self.EREFs[i]
@@ -268,16 +269,23 @@ class MMC:
             inds_type.append(thisinds)
             local_inds_type.append(local_inds)
             maxdiff_type.append(thismax)
+            natype.append(len(thisinds))
 
+        maxdiff_type = np.array(maxdiff_type)
+        natype = np.array(natype)
         id_type = np.arange(self.ntypes).astype(int)
         if Exclude_types is not None:
             id_type = np.delete(id_type, np.array(Exclude_types).astype(int) - 1)
             maxdiff_type = maxdiff_type[id_type]
+            natype = natype[id_type]
 
         if Enforce_types is not None:
             if iloop % Inteval4Enforce != 0:
                 id1_type = np.array(Enforce_types).astype(int) - 1
                 typeid1 = np.random.randint(len(id1_type), size=1)[0]
+                if natype[typeid1] == 0:
+                    local_typeid1 = np.argmax(np.array(maxdiff_type))
+                    typeid1 = id_type[local_typeid1]
             else:
                 local_typeid1 = np.argmax(np.array(maxdiff_type))
                 typeid1 = id_type[local_typeid1]
