@@ -280,18 +280,27 @@ class MMC:
         for i in range(self.ntypes):
             if natype[i] == 0:
                 thisExclude_types.append(i+1)
-                print(f"WARNING: No atoms in type {i+1}!")
+                #print(f"WARNING: No atoms in type {i+1}!")
         if Exclude_types is None:
             pass
         else:
             thisExclude_types += Exclude_types
         if len(thisExclude_types) > 0:
-            id_type = np.delete(id_type, np.array(thisExclude_types).astype(int) - 1)
+            thisExclude_types = np.array(thisExclude_types).astype(int) - 1
+            thisExclude_types = np.unique(thisExclude_types)
+            id_type = np.delete(id_type, thisExclude_types, axis=0)
             maxdiff_type = maxdiff_type[id_type]
             natype = natype[id_type]
 
+
+        print(f"id_type: {id_type} natype: {natype} maxdiff_type: {maxdiff_type}")
+        print(f"========")
+
+
         if len(id_type) < 2:
             raise ValueError("System is has less than two types for MMMC.")
+
+
 
         if Enforce_types is not None:
             if iloop % Inteval4Enforce != 0:

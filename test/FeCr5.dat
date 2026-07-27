@@ -1,7 +1,7 @@
 LAMMPS data file via write_data, version 7 Feb 2024, timestep = 1259, units = metal
 
 16000 atoms
-2 atom types
+3 atom types
 
 -0.06868574238579983 57.06868574238571 xlo xhi
 -0.06868574238579983 57.06868574238571 ylo yhi
@@ -12,6 +12,8 @@ Masses
 
 1 55.845
 2 51.996
+3 12.0107
+
 
 Atoms # atomic
 
