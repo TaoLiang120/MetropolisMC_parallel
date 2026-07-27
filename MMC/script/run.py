@@ -30,12 +30,13 @@ def main():
     EREFs = MMCsetts["EREFs"]
     ff_elements = MMCsetts["ff_elements"]
     ratio_hot1 = MMCsetts["ratio_hot1"]
-    ratio_hot2 = MMCsetts["ratio_hot2"]
+    ratio2 = MMCsetts["ratio2"]
+    select_style = MMCsetts["select_style"]
     norm = MMCsetts["norm"]
     min_norm = MMCsetts["min_norm"]
 
     mydata = MMC(ntypes, EREFs=EREFs, ff_elements=ff_elements,
-                 ratio_hot1=ratio_hot1, ratio_hot2=ratio_hot2,
+                 ratio_hot1=ratio_hot1, ratio2=ratio2, select_style=select_style,
                  norm=norm, min_norm=min_norm)
 
     if rank_world == 0:
@@ -62,6 +63,7 @@ def main():
     iloop = 0
     iaccept = 0
     ireject = 0
+
     lmp.excute_file(infile)
     mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop)
     mydata.natoms = len(mydata.last_types)
@@ -70,24 +72,33 @@ def main():
     init_energy = mydata.last_TE
     energy_checkpoint = init_energy
 
+    first_types = [0] * ntypes
+    second_types = [0] * ntypes
+    first_accept = [0] * ntypes
+    second_accept = [0] * ntypes
     if rank_world == 0:
         logstr = f"loopmax:{loopmax} Temp:{Temperature} convergenc: energy < {tol} in {Nsteps4Checkpoint} steps"
         Logfile.write_to_file(logstr, open_style="w")
-        logstr = f"start MMC for fname:{fdata} natoms:{mydata.natoms} ratio_hot1:{ratio_hot1} ratio_hot2: {ratio_hot2}"
+        logstr = f"start MMC for fname:{fdata} natoms:{mydata.natoms} ratio_hot1:{ratio_hot1} ratio2: {ratio2}"
         Logfile.write_to_file(logstr, open_style="a")
-        logstr = f"Reference energies of each type at {iloop} step are :{mydata.EREFs}"
+
+        logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
+        logstr += "\n" + f"-- first_types:{first_types} second_types:{second_types} --"
+        logstr += "\n" + f"-- first_accept:{first_accept} second_accept:{second_accept} --"
+        logstr += "\n" + f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
         Logfile.write_to_file(logstr, open_style="a")
-        logstr = f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
         SummaryDF.append_to_file(iloop, iaccept, ireject, init_energy)
-        Logfile.write_to_file(logstr, open_style="a")
 
     isValid = True
     while isValid:
         if rank_world == 0:
-            id_hot1, id_hot2 = mydata.get_select_ids(iloop, mydata.last_types, eatoms, Exclude_types=Exclude_types,
+            id_1, id_2, typeid1, typeid2 = mydata.get_select_ids(iloop, mydata.last_types, eatoms, Exclude_types=Exclude_types,
                                                     Enforce_types=Enforce_types, Inteval4Enforce=Inteval4Enforce,
                                                     molids=molids, Exclude_mid=Exclude_mid)
-            this_types = mydata.get_this_types(id_hot1, id_hot2)
+
+            first_types[typeid1] += 1
+            second_types[typeid2] += 1
+            this_types = mydata.get_this_types(id_1, id_2)
         else:
             this_types = None
         comm_world.Barrier()
@@ -100,12 +111,12 @@ def main():
 
         if iloop % Nsteps4UpdateEREFs == 0:
             mydata.update_EREFs(mydata.this_types, eatoms)
-            if rank_world == 0:
-                logstr = f"Reference energies for {ntypes} types at {iloop} step are :{mydata.EREFs}"
-                Logfile.write_to_file(logstr, open_style="a")
 
         if rank_world == 0:
             isAccept, iaccept, ireject = mydata.MMC(iaccept, ireject, Temp=Temperature)
+            if isAccept:
+                first_accept[typeid1] += 1
+                second_accept[typeid2] += 1
         else:
             isAccept = None
         comm_world.Barrier()
@@ -120,7 +131,10 @@ def main():
             SummaryDF.append_to_file(iloop, iaccept, ireject, mydata.last_TE)
 
         if iloop % Nsteps4Visual == 0 and rank_world == 0:
-            logstr = f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
+            logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
+            logstr += "\n" + f"-- first_types:{first_types} second_types:{second_types} --"
+            logstr += "\n" + f"-- first_accept:{first_accept} second_accept:{second_accept} --"
+            logstr += "\n" + f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
             Logfile.write_to_file(logstr, open_style="a")
 
         if rank_world == 0:
@@ -137,7 +151,10 @@ def main():
 
     lmp.write_data(iloop)
     lmp.close()
-    logstr = f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
+    logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
+    logstr += "\n" + f"-- first_types:{first_types} second_types:{second_types} --"
+    logstr += "\n" + f"-- first_accept:{first_accept} second_accept:{second_accept} --"
+    logstr += "\n" + f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
     if rank_world == 0:
         Logfile.write_to_file(logstr, open_style="a")
         SummaryDF.append_to_file(iloop, iaccept, ireject, mydata.last_TE)

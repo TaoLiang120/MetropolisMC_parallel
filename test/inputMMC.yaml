@@ -12,7 +12,8 @@ MetropolisMC:
     - C
     - Cr
   ratio_hot1: 0.1
-  ratio_hot2: 0.3
+  ratio2: none
+  select_style: 0
   norm: none
   min_norm: 0.02
   ratio_shift: 0.1
@@ -20,7 +21,7 @@ MetropolisMC:
   Enforce_types: 3
   Inteval4Enforce: 1
   Exclude_mid: False
-  LoopMax: 100
+  LoopMax: 200
   Nsteps4Relax: 100
   Nsteps4Checkpoint: 100
   Nsteps4UpdateEREFs: 10

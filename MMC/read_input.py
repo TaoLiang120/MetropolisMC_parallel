@@ -62,7 +62,8 @@ class Settings:
             thisPyLAMMPS[key] = PyLAMMPS[key]
 
         thisMMC = {"ntypes": 1, "EREFs": None, "ff_elements": None,
-                   "ratio_hot": 0.1, "ratio_hot2": 0.3,
+                   "ratio_hot": 0.1, "ratio2": "none",
+                   "select_style": 0,
                    "norm": "none", "min_norm": 0.02,
                    "ratio_shift": 0.1,
                    "Exclude_types": None, "Enforce_types": None,

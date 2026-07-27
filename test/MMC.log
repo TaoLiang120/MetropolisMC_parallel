@@ -1,8 +1,90 @@
-loopmax:100 Temp:300.0 convergenc: energy < 0.001 in 100 steps
-start MMC for fname:FeCr5_reset.dat natoms:16000 ratio_hot1:0.1 ratio_hot2: 0.3
-Reference energies of each type at 0 step are :[-4.06940084  0.         -2.83199289]
+loopmax:200 Temp:300.0 convergenc: energy < 0.001 in 100 steps
+start MMC for fname:FeCr5_reset.dat natoms:16000 ratio_hot1:0.1 ratio2: none
+-- Reference energies of each type at 0 step are :[-4.06940084  0.         -2.83199289] --
+-- first_types:[0, 0, 0] second_types:[0, 0, 0] --
+-- first_accept:[0, 0, 0] second_accept:[0, 0, 0] --
 == iloop:0 iaccept:0 ireject: 0 total_energy:-64120.48700036126 ==
-Reference energies for 3 types at 10 step are :[-4.06949207  0.         -2.83183337]
-== iloop:10 iaccept:8 ireject: 2 total_energy:-64121.74610525802 ==
-Reference energies for 3 types at 20 step are :[-4.06956233  0.         -2.83171582]
-== iloop:20 iaccept:13 ireject: 7 total_energy:-64122.72011862768 ==
+-- Reference energies of each type at 10 step are :[-4.06948669  0.         -2.830839  ] --
+-- first_types:[4, 0, 6] second_types:[6, 0, 4] --
+-- first_accept:[3, 0, 2] second_accept:[2, 0, 3] --
+== iloop:10 iaccept:5 ireject: 5 total_energy:-64121.028735581735 ==
+-- Reference energies of each type at 20 step are :[-4.0695498   0.         -2.83046555] --
+-- first_types:[10, 0, 10] second_types:[10, 0, 10] --
+-- first_accept:[6, 0, 4] second_accept:[4, 0, 6] --
+== iloop:20 iaccept:10 ireject: 10 total_energy:-64121.529377331186 ==
+-- Reference energies of each type at 30 step are :[-4.06963843  0.         -2.82970731] --
+-- first_types:[13, 0, 17] second_types:[17, 0, 13] --
+-- first_accept:[9, 0, 8] second_accept:[8, 0, 9] --
+== iloop:30 iaccept:17 ireject: 13 total_energy:-64122.2699886542 ==
+-- Reference energies of each type at 40 step are :[-4.06969726  0.         -2.82935951] --
+-- first_types:[17, 0, 23] second_types:[23, 0, 17] --
+-- first_accept:[11, 0, 11] second_accept:[11, 0, 11] --
+== iloop:40 iaccept:22 ireject: 18 total_energy:-64123.193803048525 ==
+-- Reference energies of each type at 50 step are :[-4.06982315  0.         -2.82880842] --
+-- first_types:[23, 0, 27] second_types:[27, 0, 23] --
+-- first_accept:[15, 0, 11] second_accept:[11, 0, 15] --
+== iloop:50 iaccept:26 ireject: 24 total_energy:-64124.44525651364 ==
+-- Reference energies of each type at 60 step are :[-4.06998116  0.         -2.82740229] --
+-- first_types:[28, 0, 32] second_types:[32, 0, 28] --
+-- first_accept:[18, 0, 14] second_accept:[14, 0, 18] --
+== iloop:60 iaccept:32 ireject: 28 total_energy:-64125.6356190186 ==
+-- Reference energies of each type at 70 step are :[-4.07011899  0.         -2.82617424] --
+-- first_types:[31, 0, 39] second_types:[39, 0, 31] --
+-- first_accept:[21, 0, 18] second_accept:[18, 0, 21] --
+== iloop:70 iaccept:39 ireject: 31 total_energy:-64126.748494112275 ==
+-- Reference energies of each type at 80 step are :[-4.07019106  0.         -2.82512114] --
+-- first_types:[36, 0, 44] second_types:[44, 0, 36] --
+-- first_accept:[23, 0, 20] second_accept:[20, 0, 23] --
+== iloop:80 iaccept:43 ireject: 37 total_energy:-64127.24363671765 ==
+-- Reference energies of each type at 90 step are :[-4.07029281  0.         -2.82416056] --
+-- first_types:[42, 0, 48] second_types:[48, 0, 42] --
+-- first_accept:[26, 0, 21] second_accept:[21, 0, 26] --
+== iloop:90 iaccept:47 ireject: 43 total_energy:-64127.83345292462 ==
+-- Reference energies of each type at 100 step are :[-4.0703375   0.         -2.82372282] --
+-- first_types:[48, 0, 52] second_types:[52, 0, 48] --
+-- first_accept:[29, 0, 22] second_accept:[22, 0, 29] --
+== iloop:100 iaccept:51 ireject: 49 total_energy:-64128.21858691127 ==
+-- Reference energies of each type at 110 step are :[-4.07042081  0.         -2.82238907] --
+-- first_types:[54, 0, 56] second_types:[56, 0, 54] --
+-- first_accept:[32, 0, 23] second_accept:[23, 0, 32] --
+== iloop:110 iaccept:55 ireject: 55 total_energy:-64128.653172523715 ==
+-- Reference energies of each type at 120 step are :[-4.07054391  0.         -2.82202501] --
+-- first_types:[57, 0, 63] second_types:[63, 0, 57] --
+-- first_accept:[35, 0, 27] second_accept:[27, 0, 35] --
+== iloop:120 iaccept:62 ireject: 58 total_energy:-64130.028308506204 ==
+-- Reference energies of each type at 130 step are :[-4.07064554  0.         -2.82090086] --
+-- first_types:[64, 0, 66] second_types:[66, 0, 64] --
+-- first_accept:[39, 0, 27] second_accept:[27, 0, 39] --
+== iloop:130 iaccept:66 ireject: 64 total_energy:-64130.533408197356 ==
+-- Reference energies of each type at 140 step are :[-4.07078816  0.         -2.81935256] --
+-- first_types:[69, 0, 71] second_types:[71, 0, 69] --
+-- first_accept:[42, 0, 29] second_accept:[29, 0, 42] --
+== iloop:140 iaccept:71 ireject: 69 total_energy:-64131.4625216502 ==
+-- Reference energies of each type at 150 step are :[-4.07082707  0.         -2.81857912] --
+-- first_types:[75, 0, 75] second_types:[75, 0, 75] --
+-- first_accept:[45, 0, 29] second_accept:[29, 0, 45] --
+== iloop:150 iaccept:74 ireject: 76 total_energy:-64131.84089700868 ==
+-- Reference energies of each type at 160 step are :[-4.07085848  0.         -2.81860984] --
+-- first_types:[80, 0, 80] second_types:[80, 0, 80] --
+-- first_accept:[48, 0, 31] second_accept:[31, 0, 48] --
+== iloop:160 iaccept:79 ireject: 81 total_energy:-64132.14561323068 ==
+-- Reference energies of each type at 170 step are :[-4.07096107  0.         -2.81767744] --
+-- first_types:[85, 0, 85] second_types:[85, 0, 85] --
+-- first_accept:[53, 0, 31] second_accept:[31, 0, 53] --
+== iloop:170 iaccept:84 ireject: 86 total_energy:-64132.90589243368 ==
+-- Reference energies of each type at 180 step are :[-4.07104773  0.         -2.81661256] --
+-- first_types:[90, 0, 90] second_types:[90, 0, 90] --
+-- first_accept:[56, 0, 33] second_accept:[33, 0, 56] --
+== iloop:180 iaccept:89 ireject: 91 total_energy:-64133.54529604075 ==
+-- Reference energies of each type at 190 step are :[-4.07113394  0.         -2.81652579] --
+-- first_types:[94, 0, 96] second_types:[96, 0, 94] --
+-- first_accept:[59, 0, 36] second_accept:[36, 0, 59] --
+== iloop:190 iaccept:95 ireject: 95 total_energy:-64134.53108606685 ==
+-- Reference energies of each type at 200 step are :[-4.07125448  0.         -2.81532394] --
+-- first_types:[99, 0, 101] second_types:[101, 0, 99] --
+-- first_accept:[64, 0, 36] second_accept:[36, 0, 64] --
+== iloop:200 iaccept:100 ireject: 100 total_energy:-64135.34208630242 ==
+-- Reference energies of each type at 200 step are :[-4.07125448  0.         -2.81532394] --
+-- first_types:[99, 0, 101] second_types:[101, 0, 99] --
+-- first_accept:[64, 0, 36] second_accept:[36, 0, 64] --
+== iloop:200 iaccept:100 ireject: 100 total_energy:-64135.34208630242 ==

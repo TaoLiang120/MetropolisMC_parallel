@@ -139,7 +139,8 @@ class PyLMP4MMC:
         self.bin.close()
 
 class MMC:
-    def __init__(self, ntypes, EREFs=None, ff_elements=None, ratio_hot1=0.1, ratio_hot2=0.2,
+    def __init__(self, ntypes, EREFs=None, ff_elements=None,
+                 ratio_hot1=0.1, ratio2="none", select_style=0,
                  norm="auto", min_norm=0.02):
         self.kB = 8.617333262145e-5
         self._natoms = 1
@@ -154,11 +155,16 @@ class MMC:
         self.this_TE = 0.0
         self.last_TE = 0.0
         self.ratio_hot1 = ratio_hot1
-        self.ratio_hot2 = ratio_hot2
+        self.ratio2 = ratio2
+        self.select_style = select_style
         if isinstance(self.ratio_hot1, float):
             self.ratio_hot1 = [self.ratio_hot1] * ntypes
-        if isinstance(self.ratio_hot2, float):
-            self.ratio_hot2 = [self.ratio_hot2] * ntypes
+        if isinstance(self.ratio2, float):
+            self.ratio2 = [self.ratio2] * ntypes
+        elif isinstance(self.ratio2, list):
+            pass
+        else:
+            self.ratio2 = ["none"] * ntypes
         self.norm = norm
 
         if isinstance(self.norm, float) or isinstance(self.norm, int):
@@ -330,8 +336,14 @@ class MMC:
         local_typeid2 = np.random.randint(len(id_type), size=1)[0]
         typeid2 = id_type[local_typeid2]
         sym2 = self.ff_elements[typeid2]
-        thisratio2 = self.ratio_hot2[typeid2]
         natoms2 = len(local_inds_type[typeid2])
+
+        thisratio2 = self.ratio2[typeid2]
+        if isinstance(thisratio2, float):
+            if self.select_style == 0:
+                thisratio2 = 1.0 - thisratio2
+        else:
+            thisratio2 = 1.0
         iratio2 = int(natoms2*thisratio2)
         if iratio2 < 2:
             raise ValueError("System is too small for iratio second pick. Set iratio_hot2 to 1.0 and rerun it.")
@@ -343,7 +355,7 @@ class MMC:
         #print(f"sym1:{sym1} typeid1:{typeid1} sid1:{sid1} e_1:{eatoms[sid1]}")
         #print(f"sym2:{sym2} typeid2:{typeid2} sid2:{sid2} e_2:{eatoms[sid2]}")
         #print("----")
-        return sid1, sid2
+        return sid1, sid2, typeid1, typeid2
 
     def get_this_types(self, id_hot, id_cold):
         self.this_types = copy.deepcopy(self.last_types)
