@@ -292,15 +292,8 @@ class MMC:
             maxdiff_type = maxdiff_type[id_type]
             natype = natype[id_type]
 
-
-        print(f"id_type: {id_type} natype: {natype} maxdiff_type: {maxdiff_type}")
-        print(f"========")
-
-
         if len(id_type) < 2:
             raise ValueError("System is has less than two types for MMMC.")
-
-
 
         if Enforce_types is not None:
             if iloop % Inteval4Enforce != 0:
