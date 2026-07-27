@@ -63,6 +63,10 @@ def main():
     iloop = 0
     iaccept = 0
     ireject = 0
+    first_types = [0] * ntypes
+    second_types = [0] * ntypes
+    first_accept = [0] * ntypes
+    second_accept = [0] * ntypes
 
     lmp.excute_file(infile)
     mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop)
@@ -71,15 +75,12 @@ def main():
     mydata.update_EREFs(mydata.last_types, eatoms, molids=molids, Exclude_mid=Exclude_mid)
     init_energy = mydata.last_TE
     energy_checkpoint = init_energy
-
-    first_types = [0] * ntypes
-    second_types = [0] * ntypes
-    first_accept = [0] * ntypes
-    second_accept = [0] * ntypes
     if rank_world == 0:
         logstr = f"loopmax:{loopmax} Temp:{Temperature} convergenc: energy < {tol} in {Nsteps4Checkpoint} steps"
         Logfile.write_to_file(logstr, open_style="w")
-        logstr = f"start MMC for fname:{fdata} natoms:{mydata.natoms} ratio_hot1:{ratio_hot1} ratio2: {ratio2}"
+        logstr = f"start MMC for fname:{fdata} natoms:{mydata.natoms} "
+        Logfile.write_to_file(logstr, open_style="a")
+        logstr = f"ratio_hot1:{ratio_hot1} ratio2: {ratio2} select_style: {select_style}"
         Logfile.write_to_file(logstr, open_style="a")
 
         logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
