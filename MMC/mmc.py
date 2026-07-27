@@ -161,7 +161,7 @@ class MMC:
             self.ratio_hot2 = [self.ratio_hot2] * ntypes
         self.norm = norm
 
-        if isinstance(self.norm, float):
+        if isinstance(self.norm, float) or isinstance(self.norm, int):
             self.norm = [self.norm] * ntypes
         elif self.norm is None:
             self.norm = ["none"] * ntypes
