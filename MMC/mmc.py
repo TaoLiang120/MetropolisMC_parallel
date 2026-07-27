@@ -102,9 +102,9 @@ class PyLMP4MMC:
             if len(lines) >= natoms + 8 + 1:
                 isValid = False
         lines[8] = lines[8].replace("ITEM: ATOMS ", "")
-        with open("../test/tmp.csv", "w") as fh:
+        with open("tmp.csv", "w") as fh:
             fh.writelines(lines[8:natoms + 8 + 1])
-        df = pd.read_csv("../test/tmp.csv", sep=" ")
+        df = pd.read_csv("tmp.csv", sep=" ")
         return df
              
     def get_eatoms(self, iloop, natoms):
