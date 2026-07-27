@@ -253,14 +253,14 @@ class MMC:
         for i in range(self.ntypes):
             thisnorm = self.norm[i]
             thisref = self.EREFs[i]
-            if isinstance(thisnorm, str) and thisnorm.lower() == "none":
+            if isinstance(thisnorm, float) or isinstance(thisnorm, int):
+                continue
+            elif thisnorm == "none":
                 thisnorm = 1.0
             elif isinstance(thisnorm, str) and thisnorm.lower() == "auto":
                 thisnorm = max(abs(thisref), self.min_norm)
-            if thisnorm is None:
-                thisnorm = 1.0
             else:
-                continue
+                thisnorm = 1.0
 
             thisinds = np.compress(apptypes == i, inds)
             if len(thisinds) > 0:
