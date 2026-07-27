@@ -276,7 +276,6 @@ class MMC:
         maxdiff_type = np.array(maxdiff_type)
         natype = np.array(natype).astype(int)
         id_type = np.arange(self.ntypes).astype(int)
-
         thisExclude_types = []
         for i in range(self.ntypes):
             if natype[i] == 0:
@@ -320,8 +319,12 @@ class MMC:
         sid1 = inds_type[typeid1][global_sid1]
         sid1 = inds_mols[sid1]
 
+        id_type2 = np.arange(len(id_type))
+        id_type2 = np.compress(id_type != typeid1, id_type2)
+        maxdiff_type = maxdiff_type[id_type2]
+        natype = natype[id_type2]
+        id_type = id_type[id_type2]
 
-        id_type = np.delete(id_type, [typeid1])
         local_typeid2 = np.random.randint(len(id_type), size=1)[0]
         typeid2 = id_type[local_typeid2]
         sym2 = self.ff_elements[typeid2]
