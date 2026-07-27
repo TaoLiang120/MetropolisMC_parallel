@@ -5,10 +5,11 @@ PyLAMMPS:
   atom_style: molecular
   Input4LAMMPS: in.MMC
 MetropolisMC:
-  ntypes: 2
+  ntypes: 3
   EREFs: None
   ff_elements:
     - Fe
+    - C
     - Cr
   ratio_hot1: 0.1
   ratio_hot2: 0.3

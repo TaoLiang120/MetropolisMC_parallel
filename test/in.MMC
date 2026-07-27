@@ -7,8 +7,8 @@ boundary      p  p  p
 
 pair_style hybrid/overlay eam/alloy eam/fs
 read_data     DataOut/MMC0.dat
-pair_coeff * * eam/alloy FeCCr_d.eam.alloy Fe Cr
-pair_coeff * * eam/fs FeCCr_s.eam.fs Fe Cr
+pair_coeff * * eam/alloy FeCCr_d.eam.alloy Fe C Cr
+pair_coeff * * eam/fs FeCCr_s.eam.fs Fe C Cr
 
 
 neighbor 2.0 bin
