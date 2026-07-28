@@ -19,7 +19,7 @@ MetropolisMC:
   min_norm: 0.02
   ratio_shift: 0.1
   Exclude_types: 2
-  Enforce_types: None
+  Enforce_types: 3
   Inteval4Enforce: 10
   Exclude_mid: False
   LoopMax: 200

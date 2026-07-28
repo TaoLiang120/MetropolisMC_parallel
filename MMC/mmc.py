@@ -88,7 +88,6 @@ class PyLMP4MMC:
             else:
                 for line in relax_lines:
                     self.bin.command(line)
-                    print(line)
         self.bin.command("run 0")
         etotal = self.bin.get_thermo("etotal")
         types = self.bin.gather_atoms("type", 0, 1)

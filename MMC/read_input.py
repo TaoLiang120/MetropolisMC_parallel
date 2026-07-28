@@ -1,3 +1,4 @@
+import os
 import yaml
 from mpi4py import MPI
 from MMC.error_exit import error_exit
@@ -61,7 +62,7 @@ class Settings:
 
         for key in PyLAMMPS:
             thisPyLAMMPS[key] = PyLAMMPS[key]
-        if isinstance(thisPyLAMMPS["Input4Relax"], str):
+        if isinstance(thisPyLAMMPS["Input4Relax"], str) and os.path.isfile(thisPyLAMMPS["Input4Relax"]):
             with open(thisPyLAMMPS["Input4Relax"], "r") as f:
                 lines = f.readlines()
             thisPyLAMMPS["relax_lines"] = lines
