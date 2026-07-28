@@ -4,6 +4,7 @@ PyLAMMPS:
   FileName: FeCr5_reset.dat
   atom_style: molecular
   Input4LAMMPS: in.MMC
+  Input4Relax: MMC_relax.in
 MetropolisMC:
   ntypes: 3
   EREFs: None
@@ -18,8 +19,8 @@ MetropolisMC:
   min_norm: 0.02
   ratio_shift: 0.1
   Exclude_types: 2
-  Enforce_types: 3
-  Inteval4Enforce: 1
+  Enforce_types: None
+  Inteval4Enforce: 10
   Exclude_mid: False
   LoopMax: 200
   Nsteps4Relax: 100

@@ -44,6 +44,7 @@ def main():
     comm_world.Barrier()
 
     atom_style = thissett.PyLAMMPS["atom_style"]
+    relax_lines = thissett.PyLAMMPS["relax_lines"]
     loopmax = MMCsetts["LoopMax"]
     ratio_shift = MMCsetts["ratio_shift"]
     Exclude_types = MMCsetts["Exclude_types"]
@@ -70,7 +71,7 @@ def main():
     maxdiff = [0.0] * ntypes
 
     lmp.excute_file(infile)
-    mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop)
+    mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop, relax_lines=relax_lines)
     mydata.natoms = len(mydata.last_types)
     eatoms = lmp.get_eatoms(iloop, mydata.natoms)
     mydata.update_EREFs(mydata.last_types, eatoms, molids=molids, Exclude_mid=Exclude_mid)
@@ -109,7 +110,7 @@ def main():
         this_types = comm_world.bcast(this_types, root=0)
         lmp.scatter_this_types(this_types)
         iloop += 1
-        mydata.this_TE, mydata.this_types, molids = lmp.get_total_energy_types(iloop)
+        mydata.this_TE, mydata.this_types, molids = lmp.get_total_energy_types(iloop, relax_lines=relax_lines)
         eatoms = lmp.get_eatoms(iloop, mydata.natoms)
 
         if iloop % Nsteps4UpdateEREFs == 0:

@@ -48,7 +48,8 @@ class Settings:
                 thissystem[key] = tsystem[key]
 
         thisPyLAMMPS = {"Screen": False, "Log": False,
-                        "FileName": "lmp.data", "atom_style": "atomic", "Input4LAMMPS": "in.lmp"}
+                        "FileName": "lmp.data", "atom_style": "atomic",
+                        "Input4LAMMPS": "in.lmp", "Input4Relax": None}
 
         PyLAMMPS = parameters["PyLAMMPS"]
         if "FileName" not in PyLAMMPS:
@@ -60,6 +61,12 @@ class Settings:
 
         for key in PyLAMMPS:
             thisPyLAMMPS[key] = PyLAMMPS[key]
+        if isinstance(thisPyLAMMPS["Input4Relax"], str):
+            with open(thisPyLAMMPS["Input4Relax"], "r") as f:
+                lines = f.readlines()
+            thisPyLAMMPS["relax_lines"] = lines
+        else:
+            thisPyLAMMPS["relax_lines"] = []
 
         thisMMC = {"ntypes": 1, "EREFs": None, "ff_elements": None,
                    "ratio_hot": 0.1, "ratio2": "none",
@@ -83,6 +90,34 @@ class Settings:
             error_exit(errormsg)
         for key in MMC:
             thisMMC[key] = MMC[key]
+
+        if isinstance(thisMMC["Exclude_types"], int):
+            pass
+        elif isinstance(thisMMC["Exclude_types"], list):
+            isvalid = True
+            for i in range(len(thisMMC["Exclude_types"])):
+                try:
+                    thisMMC["Exclude_types"][i] = int(thisMMC["Exclude_types"][i])
+                except:
+                    isvalid = False
+            if not isvalid:
+                thisMMC["Exclude_types"] = None
+        else:
+            thisMMC["Exclude_types"] = None
+
+        if isinstance(thisMMC["Enforce_types"], int):
+            pass
+        elif isinstance(thisMMC["Enforce_types"], list):
+            isvalid = True
+            for i in range(len(thisMMC["Enforce_types"])):
+                try:
+                    thisMMC["Enforce_types"][i] = int(thisMMC["Enforce_types"][i])
+                except:
+                    isvalid = False
+            if not isvalid:
+                thisMMC["Enforce_types"] = None
+        else:
+            thisMMC["Enforce_types"] = None
 
         thisvisual = {"SummaryFile": "MMC_Summary.csv", "LogFile": "MMC.log",
                       "Screen": True, "Log": True, "DataOut_Path": "DataOut",

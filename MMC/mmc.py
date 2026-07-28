@@ -78,10 +78,17 @@ class PyLMP4MMC:
         coords = np.ctypeslib.as_array(coords)
         return coords
 
-    def get_total_energy_types(self, iloop, nsteps4relax=1000):
+    def get_total_energy_types(self, iloop, nsteps4relax=1000, relax_lines=None):
         if iloop % nsteps4relax == 0:
-            #pass
-            self.bin.command("minimize     0.0 1.0e-6 10000   100000")
+            apply_default = True
+            if isinstance(relax_lines, list) and len(relax_lines) > 0:
+                apply_default = False
+            if apply_default:
+                self.bin.command("minimize     0.0 1.0e-6 10000   100000")
+            else:
+                for line in relax_lines:
+                    self.bin.command(line)
+                    print(line)
         self.bin.command("run 0")
         etotal = self.bin.get_thermo("etotal")
         types = self.bin.gather_atoms("type", 0, 1)
@@ -253,7 +260,6 @@ class MMC:
         inds_type = []
         local_inds_type = []
         maxdiff_type = []
-        natype = []
         for i in range(self.ntypes):
             thisnorm = self.norm[i]
             thisref = self.EREFs[i]
@@ -277,15 +283,13 @@ class MMC:
             inds_type.append(thisinds)
             local_inds_type.append(local_inds)
             maxdiff_type.append(thismax)
-            natype.append(len(thisinds))
 
         maxdiff = copy.deepcopy(maxdiff_type)
         maxdiff_type = np.array(maxdiff_type)
-        natype = np.array(natype).astype(int)
         id_type = np.arange(self.ntypes).astype(int)
         thisExclude_types = []
         for i in range(self.ntypes):
-            if natype[i] == 0:
+            if len(local_inds_type[i]) == 0:
                 thisExclude_types.append(i+1)
                 #print(f"WARNING: No atoms in type {i+1}!")
         if Exclude_types is None:
@@ -297,17 +301,20 @@ class MMC:
             thisExclude_types = np.unique(thisExclude_types)
             id_type = np.delete(id_type, thisExclude_types, axis=0)
             maxdiff_type = maxdiff_type[id_type]
-            natype = natype[id_type]
 
         if len(id_type) < 2:
             raise ValueError("System is has less than two types for MMMC.")
 
         if Enforce_types is not None:
-            if iloop % Inteval4Enforce != 0:
+            apply_Enforce = True
+            if isinstance(Inteval4Enforce, int) and Inteval4Enforce > 1:
+                if iloop % Inteval4Enforce == Inteval4Enforce - 1:
+                    apply_Enforce = False
+            if apply_Enforce:
                 id1_type = np.array(Enforce_types).astype(int) - 1
                 local_typeid1 = np.random.randint(len(id1_type), size=1)[0]
-                typeid1 = id_type[local_typeid1]
-                if natype[typeid1] < 2:
+                typeid1 = id1_type[local_typeid1]
+                if len(local_inds_type[typeid1]) < 2:
                     local_typeid1 = np.argmax(np.array(maxdiff_type))
                     typeid1 = id_type[local_typeid1]
             else:
@@ -331,7 +338,6 @@ class MMC:
         id_type2 = np.arange(len(id_type))
         id_type2 = np.compress(id_type != typeid1, id_type2)
         maxdiff_type = maxdiff_type[id_type2]
-        natype = natype[id_type2]
         id_type = id_type[id_type2]
 
         local_typeid2 = np.random.randint(len(id_type), size=1)[0]

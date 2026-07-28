@@ -1,0 +1,7 @@
+
+velocity     all create 1000.0 10 dist uniform
+fix          1nvt all nvt temp 800.0  800.0  0.025
+run          20
+unfix        1nvt
+
+minimize     0.0 1.0e-6 10000   100000
