@@ -279,6 +279,7 @@ class MMC:
             maxdiff_type.append(thismax)
             natype.append(len(thisinds))
 
+        maxdiff = copy.deepcopy(maxdiff_type)
         maxdiff_type = np.array(maxdiff_type)
         natype = np.array(natype).astype(int)
         id_type = np.arange(self.ntypes).astype(int)
@@ -355,7 +356,7 @@ class MMC:
         #print(f"sym1:{sym1} typeid1:{typeid1} sid1:{sid1} e_1:{eatoms[sid1]}")
         #print(f"sym2:{sym2} typeid2:{typeid2} sid2:{sid2} e_2:{eatoms[sid2]}")
         #print("----")
-        return sid1, sid2, typeid1, typeid2
+        return sid1, sid2, typeid1, typeid2, maxdiff
 
     def get_this_types(self, id_hot, id_cold):
         self.this_types = copy.deepcopy(self.last_types)

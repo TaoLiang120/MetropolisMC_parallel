@@ -67,6 +67,7 @@ def main():
     second_types = [0] * ntypes
     first_accept = [0] * ntypes
     second_accept = [0] * ntypes
+    maxdiff = [0.0] * ntypes
 
     lmp.excute_file(infile)
     mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop)
@@ -83,7 +84,7 @@ def main():
         logstr = f"ratio_hot1:{ratio_hot1} ratio2: {ratio2} select_style: {select_style}"
         Logfile.write_to_file(logstr, open_style="a")
 
-        logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
+        logstr = f"-- iloop: {iloop} references :{mydata.EREFs} maxdiff:{maxdiff} --"
         logstr += "\n" + f"-- first_types:{first_types} second_types:{second_types} --"
         logstr += "\n" + f"-- first_accept:{first_accept} second_accept:{second_accept} --"
         logstr += "\n" + f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
@@ -93,7 +94,8 @@ def main():
     isValid = True
     while isValid:
         if rank_world == 0:
-            id_1, id_2, typeid1, typeid2 = mydata.get_select_ids(iloop, mydata.last_types, eatoms, Exclude_types=Exclude_types,
+            id_1, id_2, typeid1, typeid2, maxdiff = mydata.get_select_ids(iloop, mydata.last_types, eatoms,
+                                                                          Exclude_types=Exclude_types,
                                                     Enforce_types=Enforce_types, Inteval4Enforce=Inteval4Enforce,
                                                     molids=molids, Exclude_mid=Exclude_mid)
 
@@ -132,7 +134,7 @@ def main():
             SummaryDF.append_to_file(iloop, iaccept, ireject, mydata.last_TE)
 
         if iloop % Nsteps4Visual == 0 and rank_world == 0:
-            logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
+            logstr = f"-- iloop: {iloop} references :{mydata.EREFs} maxdiff:{maxdiff} --"
             logstr += "\n" + f"-- first_types:{first_types} second_types:{second_types} --"
             logstr += "\n" + f"-- first_accept:{first_accept} second_accept:{second_accept} --"
             logstr += "\n" + f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
@@ -152,7 +154,7 @@ def main():
 
     lmp.write_data(iloop)
     lmp.close()
-    logstr = f"-- Reference energies of each type at {iloop} step are :{mydata.EREFs} --"
+    logstr = f"-- iloop: {iloop} references :{mydata.EREFs} maxdiff:{maxdiff} --"
     logstr += "\n" + f"-- first_types:{first_types} second_types:{second_types} --"
     logstr += "\n" + f"-- first_accept:{first_accept} second_accept:{second_accept} --"
     logstr += "\n" + f"== iloop:{iloop} iaccept:{iaccept} ireject: {ireject} total_energy:{mydata.last_TE} =="
