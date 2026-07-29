@@ -343,18 +343,17 @@ class MMC:
         typeid2 = id_type[local_typeid2]
         sym2 = self.ff_elements[typeid2]
         natoms2 = len(local_inds_type[typeid2])
-
         thisratio2 = self.ratio2[typeid2]
-        if isinstance(thisratio2, float):
-            if self.select_style == 0:
-                thisratio2 = 1.0 - thisratio2
-        else:
+        if not isinstance(thisratio2, float):
             thisratio2 = 1.0
         iratio2 = int(natoms2*thisratio2)
         if iratio2 < 2:
             raise ValueError("System is too small for iratio second pick. Set iratio_hot2 to 1.0 and rerun it.")
         local_sid2 = np.random.randint(iratio2, size=1)[0]
-        global_sid2 = local_inds_type[typeid2][local_sid2]
+        if self.select_style == 0:
+            global_sid2 = local_inds_type[typeid2][natoms2 - local_sid2 - 1]
+        else:
+            global_sid2 = local_inds_type[typeid2][local_sid2]
         sid2 = inds_type[typeid2][global_sid2]
         sid2 = inds_mols[sid2]
 
