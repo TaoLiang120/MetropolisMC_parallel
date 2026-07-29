@@ -1,23 +1,91 @@
 loopmax:200 Temp:300.0 convergenc: energy < 0.001 in 100 steps
 start MMC for fname:FeCr5_reset.dat natoms:16000 
-ratio_hot1:0.1 ratio2: none select_style: 0
--- iloop: 0 references :[-4.06940084  0.         -2.83199289] maxdiff:[0.0, 0.0, 0.0] --
+ratio_hot1:0.1 ratio2: 1.0 select_style: 0
+-- iloop: 0 references :[-4.06940084  0.         -2.83199289] --
 -- first_types:[0, 0, 0] second_types:[0, 0, 0] --
 -- first_accept:[0, 0, 0] second_accept:[0, 0, 0] --
 == iloop:0 iaccept:0 ireject: 0 total_energy:-62389.415416627024 ==
--- iloop: 10 references :[-4.06942186  0.         -2.83212955] maxdiff:[1.2708108381578942, 0.0, 0.11638288749999992] --
--- first_types:[1, 0, 9] second_types:[9, 0, 1] --
--- first_accept:[0, 0, 3] second_accept:[3, 0, 0] --
-== iloop:10 iaccept:3 ireject: 7 total_energy:-62389.95206352708 ==
--- iloop: 20 references :[-4.06944573  0.         -2.83302893] maxdiff:[1.250211858552631, 0.0, 0.11759955000000044] --
--- first_types:[2, 0, 18] second_types:[18, 0, 2] --
--- first_accept:[1, 0, 8] second_accept:[8, 0, 1] --
-== iloop:20 iaccept:9 ireject: 11 total_energy:-62390.91597226727 ==
--- iloop: 30 references :[-4.06941548  0.         -2.83429675] maxdiff:[0.07122573157894685, 0.0, 0.13018892500000012] --
--- first_types:[2, 0, 28] second_types:[28, 0, 2] --
--- first_accept:[1, 0, 16] second_accept:[16, 0, 1] --
-== iloop:30 iaccept:17 ireject: 13 total_energy:-62391.658745406436 ==
--- iloop: 40 references :[-4.06944784  0.         -2.83445446] maxdiff:[0.07317547500000066, 0.0, 0.13145674999999946] --
--- first_types:[2, 0, 38] second_types:[38, 0, 2] --
--- first_accept:[1, 0, 21] second_accept:[21, 0, 1] --
-== iloop:40 iaccept:22 ireject: 18 total_energy:-62392.38273598584 ==
+-- iloop: 10 references :[-4.06957927  0.         -2.83001911] --
+-- first_types:[9, 0, 1] second_types:[1, 0, 9] --
+-- first_accept:[7, 0, 1] second_accept:[1, 0, 7] --
+== iloop:10 iaccept:8 ireject: 2 total_energy:-62390.562246609305 ==
+-- iloop: 20 references :[-4.06970283  0.         -2.82909515] --
+-- first_types:[17, 0, 3] second_types:[3, 0, 17] --
+-- first_accept:[11, 0, 1] second_accept:[1, 0, 11] --
+== iloop:20 iaccept:12 ireject: 8 total_energy:-62391.70115352995 ==
+-- iloop: 30 references :[-4.06982376  0.         -2.82768345] --
+-- first_types:[23, 0, 7] second_types:[7, 0, 23] --
+-- first_accept:[17, 0, 2] second_accept:[2, 0, 17] --
+== iloop:30 iaccept:19 ireject: 11 total_energy:-62392.40131637126 ==
+-- iloop: 40 references :[-4.06993621  0.         -2.82647331] --
+-- first_types:[30, 0, 10] second_types:[10, 0, 30] --
+-- first_accept:[22, 0, 2] second_accept:[2, 0, 22] --
+== iloop:40 iaccept:24 ireject: 16 total_energy:-62393.14718849107 ==
+-- iloop: 50 references :[-4.07014027  0.         -2.8244026 ] --
+-- first_types:[39, 0, 11] second_types:[11, 0, 39] --
+-- first_accept:[29, 0, 2] second_accept:[2, 0, 29] --
+== iloop:50 iaccept:31 ireject: 19 total_energy:-62394.64822379186 ==
+-- iloop: 60 references :[-4.07016807  0.         -2.82403718] --
+-- first_types:[44, 0, 16] second_types:[16, 0, 44] --
+-- first_accept:[31, 0, 3] second_accept:[3, 0, 31] --
+== iloop:60 iaccept:34 ireject: 26 total_energy:-62394.95452553824 ==
+-- iloop: 70 references :[-4.0702303   0.         -2.82326615] --
+-- first_types:[52, 0, 18] second_types:[18, 0, 52] --
+-- first_accept:[34, 0, 4] second_accept:[4, 0, 34] --
+== iloop:70 iaccept:38 ireject: 32 total_energy:-62395.2164323191 ==
+-- iloop: 80 references :[-4.07042209  0.         -2.82066006] --
+-- first_types:[59, 0, 21] second_types:[21, 0, 59] --
+-- first_accept:[39, 0, 5] second_accept:[5, 0, 39] --
+== iloop:80 iaccept:44 ireject: 36 total_energy:-62395.97481151503 ==
+-- iloop: 90 references :[-4.07049126  0.         -2.82051393] --
+-- first_types:[67, 0, 23] second_types:[23, 0, 67] --
+-- first_accept:[43, 0, 6] second_accept:[6, 0, 43] --
+== iloop:90 iaccept:49 ireject: 41 total_energy:-62396.77578500265 ==
+-- iloop: 100 references :[-4.07065052  0.         -2.81860586] --
+-- first_types:[76, 0, 24] second_types:[24, 0, 76] --
+-- first_accept:[49, 0, 6] second_accept:[6, 0, 49] --
+== iloop:100 iaccept:55 ireject: 45 total_energy:-62397.676566177724 ==
+-- iloop: 110 references :[-4.07074097  0.         -2.81704679] --
+-- first_types:[85, 0, 25] second_types:[25, 0, 85] --
+-- first_accept:[53, 0, 6] second_accept:[6, 0, 53] --
+== iloop:110 iaccept:59 ireject: 51 total_energy:-62397.84679424597 ==
+-- iloop: 120 references :[-4.07082188  0.         -2.81644806] --
+-- first_types:[93, 0, 27] second_types:[27, 0, 93] --
+-- first_accept:[58, 0, 6] second_accept:[6, 0, 58] --
+== iloop:120 iaccept:64 ireject: 56 total_energy:-62398.683093342406 ==
+-- iloop: 130 references :[-4.07093294  0.         -2.81506445] --
+-- first_types:[102, 0, 28] second_types:[28, 0, 102] --
+-- first_accept:[64, 0, 6] second_accept:[6, 0, 64] --
+== iloop:130 iaccept:70 ireject: 60 total_energy:-62399.121111464185 ==
+-- iloop: 140 references :[-4.0709397   0.         -2.81457408] --
+-- first_types:[110, 0, 30] second_types:[30, 0, 110] --
+-- first_accept:[65, 0, 6] second_accept:[6, 0, 65] --
+== iloop:140 iaccept:71 ireject: 69 total_energy:-62399.17117853452 ==
+-- iloop: 150 references :[-4.07105468  0.         -2.8136569 ] --
+-- first_types:[118, 0, 32] second_types:[32, 0, 118] --
+-- first_accept:[69, 0, 7] second_accept:[7, 0, 69] --
+== iloop:150 iaccept:76 ireject: 74 total_energy:-62399.86185059697 ==
+-- iloop: 160 references :[-4.07109072  0.         -2.81302231] --
+-- first_types:[128, 0, 32] second_types:[32, 0, 128] --
+-- first_accept:[72, 0, 7] second_accept:[7, 0, 72] --
+== iloop:160 iaccept:79 ireject: 81 total_energy:-62399.88301877725 ==
+-- iloop: 170 references :[-4.07112259  0.         -2.81298315] --
+-- first_types:[138, 0, 32] second_types:[32, 0, 138] --
+-- first_accept:[75, 0, 7] second_accept:[7, 0, 75] --
+== iloop:170 iaccept:82 ireject: 88 total_energy:-62400.33318938633 ==
+-- iloop: 180 references :[-4.07122278  0.         -2.81160666] --
+-- first_types:[147, 0, 33] second_types:[33, 0, 147] --
+-- first_accept:[81, 0, 7] second_accept:[7, 0, 81] --
+== iloop:180 iaccept:88 ireject: 92 total_energy:-62400.74932770043 ==
+-- iloop: 190 references :[-4.07122999  0.         -2.81136339] --
+-- first_types:[156, 0, 34] second_types:[34, 0, 156] --
+-- first_accept:[85, 0, 7] second_accept:[7, 0, 85] --
+== iloop:190 iaccept:92 ireject: 98 total_energy:-62401.04655306219 ==
+-- iloop: 200 references :[-4.07138129  0.         -2.80980725] --
+-- first_types:[166, 0, 34] second_types:[34, 0, 166] --
+-- first_accept:[90, 0, 7] second_accept:[7, 0, 90] --
+== iloop:200 iaccept:97 ireject: 103 total_energy:-62401.68654467267 ==
+-- iloop: 200 references :[-4.07138129  0.         -2.80980725] --
+-- first_types:[166, 0, 34] second_types:[34, 0, 166] --
+-- first_accept:[90, 0, 7] second_accept:[7, 0, 90] --
+== iloop:200 iaccept:97 ireject: 103 total_energy:-62401.68654467267 ==

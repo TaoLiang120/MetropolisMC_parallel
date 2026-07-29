@@ -146,7 +146,8 @@ class PyLMP4MMC:
 
 class MMC:
     def __init__(self, ntypes, EREFs=None, ff_elements=None,
-                 ratio_hot1=0.1, ratio2="none", select_style=0,
+                 select_style=0, ratio_hot1=0.1,
+                 ratio2=1.0, ratio2_style=0,
                  norm="auto", min_norm=0.02):
         self.kB = 8.617333262145e-5
         self._natoms = 1
@@ -160,27 +161,22 @@ class MMC:
         self.last_types = np.ones(self._natoms, dtype=int)
         self.this_TE = 0.0
         self.last_TE = 0.0
+        self.select_style = select_style
         self.ratio_hot1 = ratio_hot1
         self.ratio2 = ratio2
-        self.select_style = select_style
-        if isinstance(self.ratio_hot1, float):
-            self.ratio_hot1 = [self.ratio_hot1] * ntypes
-        if isinstance(self.ratio2, float):
-            self.ratio2 = [self.ratio2] * ntypes
-        elif isinstance(self.ratio2, list):
-            pass
-        else:
-            self.ratio2 = ["none"] * ntypes
+        self.ratio2_style = ratio2_style
+        if self.ratio2_style >= 2:
+            self.ratio2 = 1.0
         self.norm = norm
 
         if isinstance(self.norm, float) or isinstance(self.norm, int):
             self.norm = [self.norm] * ntypes
         elif isinstance(norm, str) and norm.lower() == "auto":
-            self.norm = ["none"] * ntypes
+            self.norm = ["auto"] * ntypes
         else:
             self.norm = ["none"] * ntypes
         self.min_norm = min_norm
-
+        self.KEYS = ["type", "molecule", "MASK", "EREF", "EDIFF", "EDIFF_norm"]
 
     @property
     def natoms(self):
@@ -233,134 +229,109 @@ class MMC:
         lmpdata.write_file(os.path.join(DataOut_Path, filein + "_shifted.dat"))
 
     def get_select_ids(self, iloop, types, eatoms, Exclude_types=None,
-                       Enforce_types=None, Inteval4Enforce=1,
+                       Enforce_type=None, Inteval4Enforce=1,
                        molids=None, Exclude_mid=False):
-        if isinstance(Enforce_types, int):
-            Enforce_types = [Enforce_types]
-        elif isinstance(Enforce_types, str):
-            Enforce_types = None
         if isinstance(Exclude_types, int):
             Exclude_types = [Exclude_types]
         elif isinstance(Exclude_types, str):
             Exclude_types = None
 
+        if molids is None:
+            molids = np.zeros(self.natoms, dtype=int)
+
         apptypes = types - 1
         earefs = self.EREFs[apptypes]
         eadiff = eatoms - earefs
-
-        inds = np.arange(len(eadiff)).astype(int)
-        inds_mols = np.arange(len(eadiff)).astype(int)
-        if Exclude_mid and molids is not None:
-            inds_mols = np.compress(molids >= 0, inds)
-        eadiff_mols = eadiff[inds_mols]
-        apptypes = apptypes[inds_mols]
-        inds = np.arange(len(eadiff_mols)).astype(int)
-
-        inds_type = []
-        local_inds_type = []
-        maxdiff_type = []
+        thisscales = []
         for i in range(self.ntypes):
             thisnorm = self.norm[i]
             thisref = self.EREFs[i]
             if isinstance(thisnorm, float) or isinstance(thisnorm, int):
                 continue
-            elif isinstance(thisnorm, str) and thisnorm.lower() == "auto":
-                thisnorm = max(abs(thisref), self.min_norm)
+            elif thisnorm.lower() == "auto":
+                thisnorm = 1.0 / max(abs(thisref), self.min_norm)
             else:
                 thisnorm = 1.0
+            thisscales.append(thisnorm)
+        thisscales = np.array(thisscales)
+        thisscales = thisscales[apptypes]
+        eadiff_norm = eadiff * thisscales
 
-            thisinds = np.compress(apptypes == i, inds)
-            if len(thisinds) > 0:
-                thiseadiff = eadiff_mols[thisinds]
-                local_inds = np.argsort(thiseadiff)[::-1]
-                thismax = thiseadiff[local_inds[0]] / thisnorm
-            else:
-                thisinds = np.array([]).astype(int)
-                local_inds = np.array([])
-                thismax = 0.0
+        masks = np.ones(len(eatoms), dtype=bool)
+        masks[np.compress(molids < 0, np.arange(len(eatoms)))] = False
 
-            inds_type.append(thisinds)
-            local_inds_type.append(local_inds)
-            maxdiff_type.append(thismax)
+        df_total = pd.DataFrame(columns=self.KEYS)
+        for key in self.KEYS:
+            if key == "type":
+                df_total[key] = types
+            elif key == "molecule":
+                df_total[key] = molids
+            elif key == "MASK":
+                df_total[key] = masks
+            elif key == "EREF":
+                df_total[key] = earefs
+            elif key == "EDIFF":
+                df_total[key] = eadiff
+            elif key == "EDIFF_norm":
+                df_total[key] = eadiff_norm
 
-        maxdiff = copy.deepcopy(maxdiff_type)
-        maxdiff_type = np.array(maxdiff_type)
-        id_type = np.arange(self.ntypes).astype(int)
-        thisExclude_types = []
-        for i in range(self.ntypes):
-            if len(local_inds_type[i]) == 0:
-                thisExclude_types.append(i+1)
-                #print(f"WARNING: No atoms in type {i+1}!")
+        df_total = df_total[df_total["MASK"]]
+        #df_list = [group for _, group in df_total.groupby('type')]
+
         if Exclude_types is None:
             pass
         else:
-            thisExclude_types += Exclude_types
-        if len(thisExclude_types) > 0:
-            thisExclude_types = np.array(thisExclude_types).astype(int) - 1
-            thisExclude_types = np.unique(thisExclude_types)
-            id_type = np.delete(id_type, thisExclude_types, axis=0)
-            maxdiff_type = maxdiff_type[id_type]
+            for itype in Exclude_types:
+                thismasks = df_total["MASK"].to_numpy()
+                inds = np.compress(df_total["type"] == itype, np.arange(len(df_total), dtype=int))
+                thismasks[inds] = False
+                df_total["MASK"] = thismasks
+            df_total = df_total[df_total["MASK"]]
+        df_total = df_total.sort_values("EDIFF_norm")
 
-        if len(id_type) < 2:
-            raise ValueError("System is has less than two types for MMMC.")
-
-        if Enforce_types is not None:
-            apply_Enforce = True
+        app_Enforce = False
+        if isinstance(Enforce_type, int) and Enforce_type <= self.ntypes:
             if isinstance(Inteval4Enforce, int) and Inteval4Enforce > 1:
-                if iloop % Inteval4Enforce == Inteval4Enforce - 1:
-                    apply_Enforce = False
-            if apply_Enforce:
-                id1_type = np.array(Enforce_types).astype(int) - 1
-                local_typeid1 = np.random.randint(len(id1_type), size=1)[0]
-                typeid1 = id1_type[local_typeid1]
-                if len(local_inds_type[typeid1]) < 2:
-                    local_typeid1 = np.argmax(np.array(maxdiff_type))
-                    typeid1 = id_type[local_typeid1]
-            else:
-                local_typeid1 = np.argmax(np.array(maxdiff_type))
-                typeid1 = id_type[local_typeid1]
+                if iloop % Inteval4Enforce != Inteval4Enforce - 1:
+                    app_Enforce = True
+
+
+        if app_Enforce:
+                typeid1 = Enforce_type - 1
+                sym1 = self.ff_elements[typeid1]
+                df1 = df_total[df_total["type"] == typeid1 + 1]
+                natoms1 = len(df1)
+                iratio1 = int(natoms1 * self.ratio_hot1)
+                if iratio1 < 1:
+                    raise ValueError("System is too small for iratio first pick. Set iratio_hot1 to 1.0 and rerun it.")
+                local_sid1 = np.random.randint(iratio1, size=1)[0]
+                sid1 = df1.index[natoms1 - local_sid1 - 1]
         else:
-            local_typeid1 = np.argmax(np.array(maxdiff_type))
-            typeid1 = id_type[local_typeid1]
+            natoms1 = len(df_total)
+            iratio1 = int(natoms1 * self.ratio_hot1)
+            if iratio1 < 1:
+                raise ValueError("System is too small for iratio first pick. Set iratio_hot1 to 1.0 and rerun it.")
+            local_sid1 = np.random.randint(iratio1, size=1)[0]
+            typeid1 = df_total.iloc[natoms1 - local_sid1 - 1]["type"] - 1
+            sid1 = df_total.index[natoms1 - local_sid1 - 1]
+            sym1 = self.ff_elements[typeid1]
 
-        sym1 = self.ff_elements[typeid1]
-        thisratio1 = self.ratio_hot1[typeid1]
-        natoms1 = len(local_inds_type[typeid1])
-        iratio1 = int(natoms1*thisratio1)
-        if iratio1 < 2:
-            raise ValueError("System is too small for iratio first pick. Set iratio_hot1 to 1.0 and rerun it.")
-        local_sid1 = np.random.randint(iratio1, size=1)[0]
-        global_sid1 = local_inds_type[typeid1][local_sid1]
-        sid1 = inds_type[typeid1][global_sid1]
-        sid1 = inds_mols[sid1]
-
-        id_type2 = np.arange(len(id_type))
-        id_type2 = np.compress(id_type != typeid1, id_type2)
-        maxdiff_type = maxdiff_type[id_type2]
-        id_type = id_type[id_type2]
-
-        local_typeid2 = np.random.randint(len(id_type), size=1)[0]
-        typeid2 = id_type[local_typeid2]
-        sym2 = self.ff_elements[typeid2]
-        natoms2 = len(local_inds_type[typeid2])
-        thisratio2 = self.ratio2[typeid2]
-        if not isinstance(thisratio2, float):
-            thisratio2 = 1.0
-        iratio2 = int(natoms2*thisratio2)
-        if iratio2 < 2:
-            raise ValueError("System is too small for iratio second pick. Set iratio_hot2 to 1.0 and rerun it.")
+        df2 = df_total[df_total["type"] != typeid1 + 1]
+        natoms2 = len(df2)
+        iratio2 = int(natoms2 * self.ratio2)
+        if iratio2 < 1:
+            raise ValueError("System is too small for iratio second pick. Set iratio2 to 1.0 and rerun it.")
         local_sid2 = np.random.randint(iratio2, size=1)[0]
-        if self.select_style == 0:
-            global_sid2 = local_inds_type[typeid2][natoms2 - local_sid2 - 1]
-        else:
-            global_sid2 = local_inds_type[typeid2][local_sid2]
-        sid2 = inds_type[typeid2][global_sid2]
-        sid2 = inds_mols[sid2]
+        if self.ratio2_style == 0:
+            local_sid2 = natoms2 - local_sid2 - 1
+        typeid2 = df2.iloc[local_sid2]["type"] - 1
+        sid2 = df2.index[local_sid2]
+        sym2 = self.ff_elements[typeid1]
 
         #print(f"sym1:{sym1} typeid1:{typeid1} sid1:{sid1} e_1:{eatoms[sid1]}")
         #print(f"sym2:{sym2} typeid2:{typeid2} sid2:{sid2} e_2:{eatoms[sid2]}")
         #print("----")
-        return sid1, sid2, typeid1, typeid2, maxdiff
+        return sid1, sid2, typeid1, typeid2
 
     def get_this_types(self, id_hot, id_cold):
         self.this_types = copy.deepcopy(self.last_types)

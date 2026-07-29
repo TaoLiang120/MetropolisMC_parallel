@@ -70,11 +70,12 @@ class Settings:
             thisPyLAMMPS["relax_lines"] = []
 
         thisMMC = {"ntypes": 1, "EREFs": None, "ff_elements": None,
-                   "ratio_hot": 0.1, "ratio2": "none",
                    "select_style": 0,
+                   "ratio_hot": 0.1, "ratio2": 1.0,
+                   "ratio2_style": 0,
                    "norm": "none", "min_norm": 0.02,
                    "ratio_shift": 0.1,
-                   "Exclude_types": None, "Enforce_types": None,
+                   "Exclude_types": None, "Enforce_type": None,
                    "Inteval4Enforce": 1,
                    "Exclude_mid": False,
                    "LoopMax": 1000000,
@@ -84,7 +85,15 @@ class Settings:
                    "Temperature": 300.0,
                    "Tolerance": 0.001,
         }
-
+        '''
+        norm: "auto", "none" or float or list of floats
+               auto: 1.0 / max(abs(EREF), min_norm)
+               none: 1.0
+        ratio2_style: 0, 1, 2
+               0: hot and hot
+               1: hot and cold
+               2: all atoms for 2nd selection
+        '''
         MMC = parameters['MetropolisMC']
         if "ntypes" not in MMC:
             errormsg = "There must be a ntypes for # of types in data file!"
@@ -106,19 +115,20 @@ class Settings:
         else:
             thisMMC["Exclude_types"] = None
 
-        if isinstance(thisMMC["Enforce_types"], int):
-            pass
-        elif isinstance(thisMMC["Enforce_types"], list):
-            isvalid = True
-            for i in range(len(thisMMC["Enforce_types"])):
-                try:
-                    thisMMC["Enforce_types"][i] = int(thisMMC["Enforce_types"][i])
-                except:
-                    isvalid = False
-            if not isvalid:
-                thisMMC["Enforce_types"] = None
-        else:
-            thisMMC["Enforce_types"] = None
+        if not isinstance(thisMMC["Enforce_type"], int):
+            thisMMC["Enforce_type"] = None
+
+        if not isinstance(thisMMC["select_style"], int):
+            thisMMC["select_style"] = 0
+
+        if not isinstance(thisMMC["ratio2_style"], int):
+            thisMMC["ratio2_style"] = 0
+
+        if not isinstance(thisMMC["ratio2"], float):
+            thisMMC["ratio2"] = 1.0
+
+        if thisMMC["ratio2_style"] >= 2:
+            thisMMC["ratio2"] = 1.0
 
         thisvisual = {"SummaryFile": "MMC_Summary.csv", "LogFile": "MMC.log",
                       "Screen": True, "Log": True, "DataOut_Path": "DataOut",
