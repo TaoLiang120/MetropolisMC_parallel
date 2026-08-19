@@ -56,6 +56,7 @@ def main():
     Temperature = MMCsetts["Temperature"]
     tol = MMCsetts["Tolerance"]
     Nsteps4UpdateEREFs = MMCsetts["Nsteps4UpdateEREFs"]
+    Nsteps4Relax = MMCsetts["Nsteps4Relax"]
 
     visualsett = copy.deepcopy(thissett.visual)
     Nsteps4Visual = visualsett["Nsteps4Visual"]
@@ -71,7 +72,8 @@ def main():
     second_accept = [0] * ntypes
 
     lmp.excute_file(infile)
-    mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop, relax_lines=relax_lines)
+    mydata.last_TE, mydata.last_types, molids = lmp.get_total_energy_types(iloop, nsteps4relax=Nsteps4Relax,
+                                                                           relax_lines=relax_lines)
     mydata.natoms = len(mydata.last_types)
     eatoms = lmp.get_eatoms(iloop, mydata.natoms)
     mydata.update_EREFs(mydata.last_types, eatoms, molids=molids, Exclude_mid=Exclude_mid)
@@ -110,7 +112,8 @@ def main():
         this_types = comm_world.bcast(this_types, root=0)
         lmp.scatter_this_types(this_types)
         iloop += 1
-        mydata.this_TE, mydata.this_types, molids = lmp.get_total_energy_types(iloop, relax_lines=relax_lines)
+        mydata.this_TE, mydata.this_types, molids = lmp.get_total_energy_types(iloop, nsteps4relax=Nsteps4Relax,
+                                                                               relax_lines=relax_lines)
         eatoms = lmp.get_eatoms(iloop, mydata.natoms)
 
         if iloop % Nsteps4UpdateEREFs == 0:
