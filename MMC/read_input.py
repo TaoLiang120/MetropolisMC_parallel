@@ -70,7 +70,6 @@ class Settings:
             thisPyLAMMPS["relax_lines"] = []
 
         thisMMC = {"ntypes": 1, "EREFs": None, "ff_elements": None,
-                   "select_style": 0,
                    "ratio_hot": 0.1, "ratio2": 1.0,
                    "ratio2_style": 0,
                    "norm": "none", "min_norm": 0.02,
@@ -118,8 +117,6 @@ class Settings:
         if not isinstance(thisMMC["Enforce_type"], int):
             thisMMC["Enforce_type"] = None
 
-        if not isinstance(thisMMC["select_style"], int):
-            thisMMC["select_style"] = 0
 
         if not isinstance(thisMMC["ratio2_style"], int):
             thisMMC["ratio2_style"] = 0

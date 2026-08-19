@@ -31,13 +31,11 @@ def main():
     ff_elements = MMCsetts["ff_elements"]
     ratio_hot1 = MMCsetts["ratio_hot1"]
     ratio2 = MMCsetts["ratio2"]
-    select_style = MMCsetts["select_style"]
     ratio2_style = MMCsetts["ratio2_style"]
     norm = MMCsetts["norm"]
     min_norm = MMCsetts["min_norm"]
 
     mydata = MMC(ntypes, EREFs=EREFs, ff_elements=ff_elements,
-                 select_style=select_style,
                  ratio_hot1=ratio_hot1,
                  ratio2=ratio2, ratio2_style=ratio2_style,
                  norm=norm, min_norm=min_norm)
@@ -84,7 +82,7 @@ def main():
         Logfile.write_to_file(logstr, open_style="w")
         logstr = f"start MMC for fname:{fdata} natoms:{mydata.natoms} "
         Logfile.write_to_file(logstr, open_style="a")
-        logstr = f"ratio_hot1:{ratio_hot1} ratio2: {ratio2} select_style: {select_style}"
+        logstr = f"ratio_hot1:{ratio_hot1} ratio2: {ratio2} ratio2_style: {ratio2_style}"
         Logfile.write_to_file(logstr, open_style="a")
 
         logstr = f"-- iloop: {iloop} references :{mydata.EREFs} --"

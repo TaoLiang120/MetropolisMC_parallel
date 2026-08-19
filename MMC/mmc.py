@@ -146,8 +146,7 @@ class PyLMP4MMC:
 
 class MMC:
     def __init__(self, ntypes, EREFs=None, ff_elements=None,
-                 select_style=0, ratio_hot1=0.1,
-                 ratio2=1.0, ratio2_style=0,
+                 ratio_hot1=0.1, ratio2=1.0, ratio2_style=0,
                  norm="auto", min_norm=0.02):
         self.kB = 8.617333262145e-5
         self._natoms = 1
@@ -161,7 +160,6 @@ class MMC:
         self.last_types = np.ones(self._natoms, dtype=int)
         self.this_TE = 0.0
         self.last_TE = 0.0
-        self.select_style = select_style
         self.ratio_hot1 = ratio_hot1
         self.ratio2 = ratio2
         self.ratio2_style = ratio2_style
