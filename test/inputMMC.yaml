@@ -14,20 +14,20 @@ MetropolisMC:
     - Cr
   select_style: 0
   ratio_hot1: 0.1
-  ratio2: none
+  ratio2: 0.5
   ratio2_style: 0
   norm: none
   min_norm: 0.02
   ratio_shift: 0.1
-  Exclude_types: none
-  Enforce_type: 3
+  Exclude_types: None
+  Enforce_type: None
   Inteval4Enforce: 10
   Exclude_mid: False
-  LoopMax: 200
+  LoopMax: 2500
   Nsteps4Relax: 100
   Nsteps4Checkpoint: 100
   Nsteps4UpdateEREFs: 10
-  Temperature": 300.0
+  Temperature": 800.0
   Tolerance": 0.001
 visual:
   SummaryFile: MMC_Summary.csv
@@ -35,7 +35,7 @@ visual:
   Screen: True
   Log: True
   DataOut_Path: DataOut
-  Nsteps4WriteData: 100
+  Nsteps4WriteData: 500
   Nsteps4Visual: 10
   Nsteps4Summary: 10
 
